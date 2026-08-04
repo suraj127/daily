@@ -108,7 +108,7 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
     { label: 'Revenue Today', value: `₹${(revenueToday || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'from-violet-600 to-indigo-700' },
     { label: 'Revenue Total', value: `₹${(totalRevenue || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'from-emerald-500 to-green-600' },
     { label: 'Revenue / Hour', value: `₹${(revenuePerHour || 0).toLocaleString('en-IN')}`, icon: Clock, color: 'from-sky-500 to-blue-600' },
-    { label: 'Target Achievement %', value: `${targetAchievement || 88.5}%`, icon: Target, color: 'from-purple-600 to-pink-600' },
+    { label: 'Target Achievement %', value: `${targetAchievement || 0}%`, icon: Target, color: 'from-purple-600 to-pink-600' },
   ];
 
   // Chart datasets
@@ -180,8 +180,8 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
             </div>
             <h1 className="text-2xl font-bold tracking-tight">SalesTrack Pro Executive Dashboard</h1>
             <p className="text-xs text-slate-300 mt-1 max-w-xl">
-              Monitored 19 sales executives. Today&apos;s total revenue target achievement stands at{' '}
-              <strong className="text-emerald-400 font-bold">88.5%</strong>.
+              Monitored {users.filter((u) => u.role !== 'ADMIN').length} sales representatives. Today&apos;s total revenue target achievement stands at{' '}
+              <strong className="text-emerald-400 font-bold">{targetAchievement || 0}%</strong>.
             </p>
           </div>
 
