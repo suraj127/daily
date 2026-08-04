@@ -41,8 +41,10 @@ export default function DemoTeamDashboard() {
   const todayReport = currentUser ? getTodayReportForUser(currentUser.id) : undefined;
   const isReportDoneToday = !!todayReport;
 
-  // Filter reports belonging to Demo Team
-  const demoReports = reports.filter((r) => r.team === 'DEMO_TEAM' || r.activityHours?.demo !== undefined);
+  // Scope demoReports strictly to current user for employees
+  const demoReports = currentUser?.role === 'ADMIN'
+    ? reports.filter((r) => r.team === 'DEMO_TEAM')
+    : reports.filter((r) => r.userId === currentUser?.id);
   const myReports = reports.filter((r) => r.userId === currentUser?.id);
 
   // Today's KPIs

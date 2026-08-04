@@ -32,11 +32,11 @@ export default function ReportsView() {
   const [editingReport, setEditingReport] = useState<DailyReport | null>(null);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
-  // Team Data Isolation Scope
+  // Strict Employee Data Isolation Scope: employees see only their own reports
   const scopedReports = useMemo(() => {
     if (!currentUser) return [];
     if (currentUser.role === 'ADMIN') return reports;
-    return reports.filter((r) => r.team === currentUser.team || r.userId === currentUser.id);
+    return reports.filter((r) => r.userId === currentUser.id);
   }, [reports, currentUser]);
 
   const filteredReports = scopedReports.filter((r) => {

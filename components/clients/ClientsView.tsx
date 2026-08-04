@@ -123,12 +123,12 @@ export default function ClientsView() {
     if (!currentUser) return [];
     if (currentUser.role === 'ADMIN') return clientRecords;
 
-    // For employees: Show records belonging to their own team OR matching cross-team mobile entries
-    const myTeamRecords = clientRecords.filter(r => r.userTeam === currentUser.team || r.userId === currentUser.id);
-    const myMobiles = new Set(myTeamRecords.map(r => r.mobile));
+    // For employees: Show records belonging strictly to their own user account OR matching cross-team mobile entries
+    const myOwnRecords = clientRecords.filter(r => r.userId === currentUser.id);
+    const myMobiles = new Set(myOwnRecords.map(r => r.mobile));
     
-    // Cross-team match: any record sharing mobile number with my team records
-    return clientRecords.filter(r => myMobiles.has(r.mobile) || r.userTeam === currentUser.team || r.userId === currentUser.id);
+    // Cross-team match: show only my records or shared records matching my client mobile numbers
+    return clientRecords.filter(r => myMobiles.has(r.mobile) || r.userId === currentUser.id);
   }, [clientRecords, currentUser]);
 
   // Filter records

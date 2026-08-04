@@ -38,8 +38,10 @@ export default function LeadManagementDashboard() {
   const todayReport = currentUser ? getTodayReportForUser(currentUser.id) : undefined;
   const isReportDoneToday = !!todayReport;
 
-  // Filter reports belonging to Lead Management Team
-  const lmReports = reports.filter((r) => r.team === 'LEAD_MANAGEMENT' || r.activityHours?.firstCalls !== undefined);
+  // Scope lmReports strictly to current user for employees
+  const lmReports = currentUser?.role === 'ADMIN'
+    ? reports.filter((r) => r.team === 'LEAD_MANAGEMENT')
+    : reports.filter((r) => r.userId === currentUser?.id);
   const myReports = reports.filter((r) => r.userId === currentUser?.id);
 
   // Today's KPIs
