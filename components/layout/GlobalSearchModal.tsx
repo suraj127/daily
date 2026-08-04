@@ -155,10 +155,10 @@ export default function GlobalSearchModal() {
                           )}
                           <div className="mt-2 flex items-center gap-4 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                             <span className="flex items-center">
-                              <IndianRupee className="w-3 h-3" /> ₹{r.performance.revenue.toLocaleString('en-IN')}
+                              <IndianRupee className="w-3 h-3" /> ₹{(r.performance?.revenue || 0).toLocaleString('en-IN')}
                             </span>
                             <span className="text-slate-400 font-normal">
-                              Sales Closed: {r.performance.salesClosed}
+                              Sales Closed: {r.performance?.salesClosed || 0}
                             </span>
                           </div>
                         </div>
