@@ -134,6 +134,9 @@ export interface ClientRecord {
   userId: string;
   userName: string;
   userTeam?: TeamType;
+  allottedToUserId?: string;
+  allottedToUserName?: string;
+  allottedByUserName?: string;
   date: string; // YYYY-MM-DD
   activityType: string;
   clientName: string; // Shop Name / Client Name

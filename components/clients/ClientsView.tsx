@@ -40,6 +40,7 @@ export default function ClientsView() {
   const [newActivityType, setNewActivityType] = useState('demoDone');
   const [newNotes, setNewNotes] = useState('');
   const [newSaleAmount, setNewSaleAmount] = useState('');
+  const [allottedToUserId, setAllottedToUserId] = useState('');
 
   // Sort state
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'amount'>('date');
@@ -53,6 +54,8 @@ export default function ClientsView() {
     e.preventDefault();
     if (!newClientName || !newMobile) return;
     
+    const allottedUser = users.find((u) => u.id === allottedToUserId);
+
     await addClientRecord({
       date: new Date().toISOString().split('T')[0],
       clientName: newClientName,
@@ -61,6 +64,9 @@ export default function ClientsView() {
       city: newCity || 'Mumbai',
       activityType: newActivityType,
       userTeam: currentUser?.team || 'DEMO_TEAM',
+      allottedToUserId: allottedUser?.id,
+      allottedToUserName: allottedUser?.name,
+      allottedByUserName: currentUser?.name,
       status: newActivityType === 'salesClosed' ? 'Closed' : 'Active',
       notes: newNotes,
       saleAmount: newSaleAmount ? Number(newSaleAmount) : undefined,
@@ -77,6 +83,7 @@ export default function ClientsView() {
     setNewCity('');
     setNewNotes('');
     setNewSaleAmount('');
+    setAllottedToUserId('');
   };
 
   // Helper to format activity type labels
@@ -118,17 +125,26 @@ export default function ClientsView() {
     }
   };
 
-  // Employee Scope Filter
+  // Employee Scope Filter (Includes records created by me, allotted to me, or shared mobile matches)
   const visibleRecords = useMemo(() => {
     if (!currentUser) return [];
     if (currentUser.role === 'ADMIN') return clientRecords;
 
-    // For employees: Show records belonging strictly to their own user account OR matching cross-team mobile entries
-    const myOwnRecords = clientRecords.filter(r => r.userId === currentUser.id);
-    const myMobiles = new Set(myOwnRecords.map(r => r.mobile));
-    
-    // Cross-team match: show only my records or shared records matching my client mobile numbers
-    return clientRecords.filter(r => myMobiles.has(r.mobile) || r.userId === currentUser.id);
+    const myOwnRecords = clientRecords.filter(
+      (r) =>
+        r.userId === currentUser.id ||
+        r.allottedToUserId === currentUser.id ||
+        (currentUser.name && r.allottedToUserName?.toLowerCase() === currentUser.name.toLowerCase())
+    );
+    const myMobiles = new Set(myOwnRecords.map((r) => r.mobile));
+
+    return clientRecords.filter(
+      (r) =>
+        myMobiles.has(r.mobile) ||
+        r.userId === currentUser.id ||
+        r.allottedToUserId === currentUser.id ||
+        (currentUser.name && r.allottedToUserName?.toLowerCase() === currentUser.name.toLowerCase())
+    );
   }, [clientRecords, currentUser]);
 
   // Filter records
@@ -352,6 +368,13 @@ export default function ClientsView() {
                     </div>
                   </div>
 
+                  {rec.allottedToUserName && (
+                    <div className="p-2 rounded-xl bg-violet-500/10 border border-violet-500/20 text-[10px] text-violet-700 dark:text-violet-300 font-medium flex items-center justify-between">
+                      <span>👤 Allotted By: <strong>{rec.allottedByUserName || rec.userName}</strong></span>
+                      <span>➔ Assigned Demo Rep: <strong className="font-bold text-violet-800 dark:text-violet-200">{rec.allottedToUserName}</strong></span>
+                    </div>
+                  )}
+
                   {rec.notes && (
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 italic pl-2 border-l-2 border-slate-200 dark:border-slate-800">
                       &ldquo;{rec.notes}&rdquo;
@@ -441,6 +464,11 @@ export default function ClientsView() {
                           </span>
                         </div>
                         <p className="text-slate-500 dark:text-slate-400 italic">&ldquo;{r.notes || 'No notes'}&rdquo;</p>
+                        {r.allottedToUserName && (
+                          <div className="text-[10px] text-violet-600 dark:text-violet-400 font-bold bg-violet-500/10 p-1.5 rounded-lg border border-violet-500/20">
+                            👤 Allotted By: {r.allottedByUserName || r.userName} ➔ Assigned Demo Rep: {r.allottedToUserName}
+                          </div>
+                        )}
                         <div className="text-[10px] text-slate-400 font-mono text-right">{r.date}</div>
                       </div>
                     ))}
@@ -599,6 +627,26 @@ export default function ClientsView() {
                       <option value="salesClosed">Sale Deal Closed</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Allot Demo To (Demo Team Rep)
+                  </label>
+                  <select
+                    value={allottedToUserId}
+                    onChange={(e) => setAllottedToUserId(e.target.value)}
+                    className="w-full h-10 px-3 rounded-xl bg-violet-50 dark:bg-slate-800 border border-violet-200 dark:border-slate-700 text-violet-900 dark:text-violet-100 font-bold"
+                  >
+                    <option value="">-- Optional: Select Demo Team Member --</option>
+                    {users
+                      .filter((u) => u.team === 'DEMO_TEAM')
+                      .map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name} (Demo Team)
+                        </option>
+                      ))}
+                  </select>
                 </div>
 
                 {newActivityType === 'salesClosed' && (
