@@ -74,6 +74,9 @@ export default function Home() {
       case 'recovery-dashboard':
         return <RecoveryTeamDashboard />;
       case 'daily-report':
+        if (currentUser.role === 'ADMIN') {
+          return <AdminDashboard onOpenAIModal={() => setIsAIModalOpen(true)} />;
+        }
         return <DailyReportForm />;
       case 'calendar':
         return <CalendarView />;

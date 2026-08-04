@@ -122,6 +122,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const validateAndNavigateTab = (targetTab: string) => {
     if (!currentUser) return;
 
+    if (currentUser.role === 'ADMIN') {
+      if (targetTab === 'daily-report') {
+        setAccessDeniedMsg('Access Restricted: Admin users do not submit daily reports. Redirected to Company Dashboard.');
+        setActiveTabState('company-dashboard');
+        return;
+      }
+    }
+
     if (currentUser.role === 'EMPLOYEE') {
       const allowedEmployeeTabs = ['dashboard', 'daily-report', 'calendar', 'reports', 'clients', 'profile'];
       if (!allowedEmployeeTabs.includes(targetTab)) {
@@ -174,6 +182,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const submitReport = async (reportData: Partial<DailyReport>) => {
     if (!currentUser) return { success: false, error: 'User not authenticated' };
+    if (currentUser.role === 'ADMIN') {
+      return { success: false, error: 'Admin users do not submit daily activity reports.' };
+    }
 
     const payload: Partial<DailyReport> = {
       ...reportData,
