@@ -420,143 +420,19 @@ export default function DailyReportForm() {
         </div>
       </div>
 
-      {/* Activity Hours Breakdown Inputs (Team Specific) */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+      {/* Revenue Field */}
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-3">
         <div>
           <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
-            Activity Hours Breakdown ({currentUser?.team === 'LEAD_MANAGEMENT' ? 'Lead Management Team' : currentUser?.team === 'POST_SALE' ? 'Post Sale Team' : currentUser?.team === 'RECOVERY_TEAM' ? 'Recovery Team' : 'Demo Team'})
+            Total Revenue Closed
           </h2>
-          <p className="text-[11px] text-slate-400">Specify hours spent on each activity today (Total is auto-calculated)</p>
+          <p className="text-[11px] text-slate-400">Specify total sales revenue generated today in INR (₹)</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {(currentUser?.team === 'LEAD_MANAGEMENT'
-            ? [
-                { key: 'firstCalls', label: 'First Calls' },
-                { key: 'oldCalls', label: 'Old Calls' },
-                { key: 'feedbackCalls', label: 'Feedback Calls' },
-                { key: 'followUpCalls', label: 'Follow-ups' },
-                { key: 'closingCalls', label: 'Closing Calls' },
-                { key: 'reportingMeeting', label: 'Reporting & Meeting' },
-              ]
-            : currentUser?.team === 'POST_SALE'
-            ? [
-                { key: 'customerOnboarding', label: 'Customer Onboarding' },
-                { key: 'supportCalls', label: 'Support Calls' },
-                { key: 'accountManagement', label: 'Account Management' },
-                { key: 'trainingSetup', label: 'Training & Setup' },
-                { key: 'feedbackCalls', label: 'Feedback Calls' },
-                { key: 'reportingMeeting', label: 'Reporting & Meeting' },
-              ]
-            : currentUser?.team === 'RECOVERY_TEAM'
-            ? [
-                { key: 'paymentFollowUps', label: 'Payment Follow-ups' },
-                { key: 'overdueCalls', label: 'Overdue Invoices Calls' },
-                { key: 'settlementCalls', label: 'Settlement Calls' },
-                { key: 'recoveryVisit', label: 'Recovery Visit' },
-                { key: 'reportingMeeting', label: 'Reporting & Meeting' },
-              ]
-            : [
-                // Default: Demo Team
-                { key: 'demoArrangeCalls', label: 'Demo Arrange Calls' },
-                { key: 'demo', label: 'Product Demo' },
-                { key: 'followUpCalls', label: 'Follow-ups' },
-                { key: 'closingCalls', label: 'Closing Calls' },
-                { key: 'quotationMaking', label: 'Quotation Making' },
-                { key: 'fieldVisit', label: 'Field Visit' },
-                { key: 'reportingMeeting', label: 'Reporting & Meeting' },
-              ]
-          ).map((act) => (
-            <div key={act.key} className="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60">
-              <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block truncate mb-1">
-                {act.label}
-              </label>
-              <input
-                type="number"
-                step="0.25"
-                min="0"
-                max="24"
-                value={activity[act.key as keyof ActivityBreakdown]}
-                onChange={(e) =>
-                  setActivity({ ...activity, [act.key]: parseFloat(e.target.value) || 0 })
-                }
-                className="w-full px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Daily Performance Metrics (15 count fields + Revenue) */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-        <div>
-          <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
-            Daily Performance Output Counts
-          </h2>
-          <p className="text-[11px] text-slate-400">Track counts of completed calls, demos, quotations & closed deals</p>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {[
-            { key: 'demoArrangedLm', label: 'Demo Arranged (LM)' },
-            { key: 'demoArrangedSelf', label: 'Demo Arranged (Self)' },
-            { key: 'demoDone', label: 'Demo Done' },
-            { key: 'followUpCount', label: 'Follow-up Calls' },
-            { key: 'closingCount', label: 'Closing Calls' },
-            { key: 'quotationSent', label: 'Quotation Sent' },
-            { key: 'salesClosed', label: 'Sales Closed' },
-            { key: 'clientMeetings', label: 'Client Meetings' },
-            { key: 'customerVisits', label: 'Customer Visits' },
-          ].map((perf) => {
-            const hasDetails = [
-              'demoArrangedLm',
-              'demoArrangedSelf',
-              'demoDone',
-              'followUpCount',
-              'closingCount',
-              'quotationSent',
-              'salesClosed',
-              'customerVisits',
-            ].includes(perf.key);
-
-            const currentFieldRecords = clientRecords.filter(
-              (c) => c.userId === currentUser?.id && c.date === date && c.activityType === perf.key
-            );
-
-            return (
-              <div key={perf.key} className="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/60 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1 gap-1">
-                  <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block truncate" title={perf.label}>
-                    {perf.label}
-                  </label>
-                  {hasDetails && (
-                    <button
-                      type="button"
-                      onClick={() => setActiveDetailsField({ key: perf.key, label: perf.label })}
-                      className="text-[9px] font-bold text-violet-600 dark:text-violet-400 hover:underline flex items-center shrink-0"
-                    >
-                      👤 Details ({currentFieldRecords.length})
-                    </button>
-                  )}
-                </div>
-                <input
-                  type="number"
-                  min="0"
-                  value={performance[perf.key as keyof PerformanceCounts]}
-                  onChange={(e) =>
-                    setPerformance({ ...performance, [perf.key]: parseInt(e.target.value) || 0 })
-                  }
-                  className="w-full px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                />
-              </div>
-            );
-          })}
-
-          {/* Special Revenue Field */}
-          <div className="p-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 col-span-2 sm:col-span-1">
-            <label className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 block truncate mb-1">
-              Total Revenue Closed (₹)
-            </label>
+        <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 max-w-sm">
+          <label className="text-xs font-bold text-emerald-700 dark:text-emerald-400 block truncate mb-1">
+            Total Revenue Closed (₹)
+          </label>
             <input
               type="number"
               min="0"
