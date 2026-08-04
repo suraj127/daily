@@ -24,13 +24,23 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function ClientsView() {
-  const { clientRecords, clientComments, addClientComment, users, currentUser } = useApp();
+  const { clientRecords, clientComments, addClientComment, addClientRecord, users, currentUser } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserFilter, setSelectedUserFilter] = useState('ALL');
   const [selectedActivityFilter, setSelectedActivityFilter] = useState('ALL');
   const [startDateFilter, setStartDateFilter] = useState('');
   const [endDateFilter, setEndDateFilter] = useState('');
   
+  // New Client Record Modal state
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newClientName, setNewClientName] = useState('');
+  const [newContactPerson, setNewContactPerson] = useState('');
+  const [newMobile, setNewMobile] = useState('');
+  const [newCity, setNewCity] = useState('');
+  const [newActivityType, setNewActivityType] = useState('demoDone');
+  const [newNotes, setNewNotes] = useState('');
+  const [newSaleAmount, setNewSaleAmount] = useState('');
+
   // Sort state
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'amount'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -38,6 +48,36 @@ export default function ClientsView() {
   // Selected client mobile for timeline & comment modal
   const [selectedMobileForModal, setSelectedMobileForModal] = useState<string | null>(null);
   const [commentInput, setCommentInput] = useState('');
+
+  const handleCreateRecord = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newClientName || !newMobile) return;
+    
+    await addClientRecord({
+      date: new Date().toISOString().split('T')[0],
+      clientName: newClientName,
+      contactPerson: newContactPerson || newClientName,
+      mobile: newMobile.trim(),
+      city: newCity || 'Mumbai',
+      activityType: newActivityType,
+      userTeam: currentUser?.team || 'DEMO_TEAM',
+      status: newActivityType === 'salesClosed' ? 'Closed' : 'Active',
+      notes: newNotes,
+      saleAmount: newSaleAmount ? Number(newSaleAmount) : undefined,
+    });
+
+    if (newNotes.trim()) {
+      await addClientComment(newMobile.trim(), newNotes.trim());
+    }
+
+    setIsAddModalOpen(false);
+    setNewClientName('');
+    setNewContactPerson('');
+    setNewMobile('');
+    setNewCity('');
+    setNewNotes('');
+    setNewSaleAmount('');
+  };
 
   // Helper to format activity type labels
   const getActivityLabel = (type: string) => {
@@ -175,6 +215,14 @@ export default function ClientsView() {
             View Demo Done, Demo Arranged, and Lead records. Shared mobile entries support cross-team comments between Demo & Lead Management teams.
           </p>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setIsAddModalOpen(true)}
+          className="h-10 px-5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-lg shadow-violet-600/30 flex items-center gap-2 transition-all active:scale-95 shrink-0"
+        >
+          <span>+ Add Client / Demo Record</span>
+        </button>
       </div>
 
       {/* Interactive Filter Grid */}
@@ -447,6 +495,155 @@ export default function ClientsView() {
                   <Send className="w-3.5 h-3.5" />
                   <span>Post</span>
                 </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Add New Client / Demo Record Modal */}
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md font-sans">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <Contact className="w-5 h-5 text-violet-500" /> Log New Client / Demo Record
+                  </h3>
+                  <p className="text-xs text-slate-400">Add client details, activity type, and shared mobile comments</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateRecord} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Client / Shop Name <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Nazir Jewellers / Apex Traders"
+                    value={newClientName}
+                    onChange={(e) => setNewClientName(e.target.value)}
+                    className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500 font-semibold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Contact Person
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Owner / Manager Name"
+                      value={newContactPerson}
+                      onChange={(e) => setNewContactPerson(e.target.value)}
+                      className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Mobile Number <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. 9876543210"
+                      value={newMobile}
+                      onChange={(e) => setNewMobile(e.target.value)}
+                      className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500 font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      City / Location
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Mumbai / Pune"
+                      value={newCity}
+                      onChange={(e) => setNewCity(e.target.value)}
+                      className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Activity / Record Type
+                    </label>
+                    <select
+                      value={newActivityType}
+                      onChange={(e) => setNewActivityType(e.target.value)}
+                      className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-semibold"
+                    >
+                      <option value="demoDone">Demo Completed</option>
+                      <option value="demoArrangedSelf">Demo Arranged (Self)</option>
+                      <option value="demoArrangedLm">Demo Arranged (LM)</option>
+                      <option value="firstCalls">First Lead Call</option>
+                      <option value="salesClosed">Sale Deal Closed</option>
+                    </select>
+                  </div>
+                </div>
+
+                {newActivityType === 'salesClosed' && (
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Sale Deal Amount (₹)
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 250000"
+                      value={newSaleAmount}
+                      onChange={(e) => setNewSaleAmount(e.target.value)}
+                      className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500 font-mono"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Initial Comment / Activity Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Add notes or status details... Shared by mobile number with other teams."
+                    value={newNotes}
+                    onChange={(e) => setNewNotes(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="w-1/2 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="w-1/2 h-10 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-md transition-all"
+                  >
+                    Save Client Record
+                  </button>
+                </div>
               </form>
             </motion.div>
           </div>
