@@ -811,8 +811,8 @@ export default function DailyReportForm() {
 
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-xs space-y-1 text-slate-700 dark:text-slate-300 font-mono">
                 <div>• Total Shift Hours: {totalWorkingHours} hrs</div>
-                <div>• Closed Revenue: ₹{performance.revenue.toLocaleString('en-IN')}</div>
-                <div>• Demos Conducted: {performance.demoDone}</div>
+                <div>• Closed Revenue: ₹{(performance.revenue || 0).toLocaleString('en-IN')}</div>
+                <div>• Demos Conducted: {performance.demoDone || 0}</div>
               </div>
 
               <div className="flex gap-3 pt-2">
