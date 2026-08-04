@@ -20,6 +20,9 @@ export interface User {
   email?: string;
   phone?: string;
   designation?: string;
+  monthlyRevenueTarget?: number;
+  monthlyDemosTarget?: number;
+  monthlyCallsTarget?: number;
 }
 
 export interface ActivityBreakdown {

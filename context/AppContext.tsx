@@ -40,6 +40,7 @@ interface AppContextType {
   addEmployee: (name: string, department?: string, team?: TeamType) => Promise<boolean>;
   toggleEmployeeStatus: (id: string) => Promise<boolean>;
   deleteEmployee: (id: string) => Promise<boolean>;
+  updateUserTarget: (userId: string, targets: { monthlyRevenueTarget?: number; monthlyDemosTarget?: number; monthlyCallsTarget?: number }) => Promise<boolean>;
   markNotificationRead: (id: string) => void;
   getTodayReportForUser: (userId: string) => DailyReport | undefined;
   addClientRecord: (record: Omit<ClientRecord, 'id' | 'createdAt' | 'userName' | 'userId'>) => Promise<boolean>;
@@ -325,6 +326,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const updateUserTarget = async (
+    userId: string,
+    targets: { monthlyRevenueTarget?: number; monthlyDemosTarget?: number; monthlyCallsTarget?: number }
+  ) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, ...targets } : u))
+    );
+    if (currentUser && currentUser.id === userId) {
+      setCurrentUser((prev) => (prev ? { ...prev, ...targets } : null));
+    }
+    return true;
+  };
+
   const markNotificationRead = (id: string) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
@@ -389,6 +403,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         addEmployee,
         toggleEmployeeStatus,
         deleteEmployee,
+        updateUserTarget,
         markNotificationRead,
         getTodayReportForUser,
         clientRecords,
