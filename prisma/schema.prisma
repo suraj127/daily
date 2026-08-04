@@ -1,0 +1,173 @@
+// Prisma Schema for SalesTrack Pro
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Feedback {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+enum Mood {
+  EXCELLENT
+  GOOD
+  AVERAGE
+  DIFFICULT
+  VERY_DIFFICULT
+}
+
+model User {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  name         String
+  role         Role          @default(EMPLOYEE)
+  password     String
+  department   String?       @default("Sales")
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reports      DailyReport[]
+  comments     Comment[]
+  notifications Notification[]
+  attendance   Attendance[]
+
+  @@map("users")
+}
+
+model DailyReport {
+  id                 String       @id @default(uuid())
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date               DateTime     @default(now())
+  loginTime          String
+  logoutTime         String
+  workingHours       Float
+
+  // Activity Breakdown (Hours)
+  demoArrangeCalls   Float        @default(0)
+  demo               Float        @default(0)
+  followUpCalls      Float        @default(0)
+  closingCalls       Float        @default(0)
+  quotationMaking    Float        @default(0)
+  fieldVisit         Float        @default(0)
+  reportingMeeting   Float        @default(0)
+  technicalSupport   Float        @default(0)
+  clientVisit        Float        @default(0)
+  coldCalling        Float        @default(0)
+  whatsappFollowUp   Float        @default(0)
+  emailFollowUp      Float        @default(0)
+  training           Float        @default(0)
+  internalMeeting    Float        @default(0)
+  otherWork          Float        @default(0)
+
+  // Performance Counts
+  demoArrangedLm     Int          @default(0)
+  demoArrangedSelf   Int          @default(0)
+  demoDone           Int          @default(0)
+  followUpCount      Int          @default(0)
+  closingCount       Int          @default(0)
+  quotationSent      Int          @default(0)
+  quotationApproved  Int          @default(0)
+  salesClosed        Int          @default(0)
+  revenue            Float        @default(0)
+  leadCreated        Int          @default(0)
+  leadConverted      Int          @default(0)
+  pendingLeads       Int          @default(0)
+  lostLeads          Int          @default(0)
+  clientMeetings     Int          @default(0)
+  customerVisits     Int          @default(0)
+
+  // Calculated Metrics
+  revenuePerHour     Float        @default(0)
+  salesConversion    Float        @default(0)
+  demoConversion     Float        @default(0)
+
+  // Qualitative Fields
+  achievements       String?
+  problemsFaced      String?
+  tomorrowPlan       String?
+  additionalNotes    String?
+  priority           Priority     @default(MEDIUM)
+  mood               Mood         @default(GOOD)
+  customerFeedback   Feedback     @default(POSITIVE)
+  selfRating         Int          @default(5)
+
+  comments           Comment[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([userId, date])
+  @@map("daily_reports")
+}
+
+model Comment {
+  id            String      @id @default(uuid())
+  reportId      String
+  report        DailyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String
+  parentId      String?
+  parent        Comment?    @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       Comment[]   @relation("CommentReplies")
+  attachments   String[]    @default([])
+  mentions      String[]    @default([])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("comments")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  status    String   @default("PRESENT") // PRESENT, LATE, ABSENT, HOLIDAY
+  createdAt DateTime @default(now())
+
+  @@map("attendance")
+}
+
+model Settings {
+  id            String   @id @default("default")
+  companyName   String   @default("SalesTrack Pro")
+  targetHours   Float    @default(8.0)
+  currency      String   @default("INR")
+  updatedAt     DateTime @updatedAt
+
+  @@map("settings")
+}

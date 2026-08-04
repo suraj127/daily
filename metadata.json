@@ -1,0 +1,6 @@
+{
+  "name": "SalesTrack Pro",
+  "description": "AI Powered Daily Reporting & Performance Dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
