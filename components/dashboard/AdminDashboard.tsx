@@ -195,7 +195,9 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
                     subtitle: `Detailed reports and items contributing to ${kpi.label}`,
                     icon: <Icon className="w-5 h-5 text-violet-500" />,
                     totalValue: kpi.value,
-                    metricKey: kpi.label.toLowerCase().includes('revenue')
+                    metricKey: kpi.label.toLowerCase().includes('visit')
+                      ? 'customerVisits'
+                      : kpi.label.toLowerCase().includes('revenue')
                       ? 'revenue'
                       : kpi.label.toLowerCase().includes('demo')
                       ? 'demoDone'
@@ -724,8 +726,12 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
           icon={selectedMetricModal.icon}
           totalValue={selectedMetricModal.totalValue}
           reports={selectedMetricModal.reports}
+          clientRecords={clientRecords}
           metricKey={selectedMetricModal.metricKey}
           onNavigateTab={setActiveTab}
+          onSelectClientMobile={(mobile) => {
+            setActiveTab('clients');
+          }}
         />
       )}
     </div>

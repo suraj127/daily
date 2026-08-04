@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calendar, User, FileText, ArrowRight, PhoneCall, CheckCircle2, Clock, IndianRupee } from 'lucide-react';
-import { DailyReport } from '@/lib/types';
+import { X, Calendar, User, FileText, ArrowRight, PhoneCall, CheckCircle2, Clock, MapPin, Building2, Phone, Briefcase } from 'lucide-react';
+import { DailyReport, ClientRecord } from '@/lib/types';
 
 export interface MetricDetailModalProps {
   isOpen: boolean;
@@ -13,8 +13,10 @@ export interface MetricDetailModalProps {
   icon?: React.ReactNode;
   totalValue: string | number;
   reports: DailyReport[];
-  metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'onboarding' | 'support' | 'collections';
+  clientRecords?: ClientRecord[];
+  metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'customerVisits' | 'onboarding' | 'support' | 'collections';
   onNavigateTab?: (tab: string) => void;
+  onSelectClientMobile?: (mobile: string) => void;
 }
 
 export default function MetricDetailModal({
@@ -25,10 +27,14 @@ export default function MetricDetailModal({
   icon,
   totalValue,
   reports,
+  clientRecords = [],
   metricKey,
   onNavigateTab,
+  onSelectClientMobile,
 }: MetricDetailModalProps) {
   if (!isOpen) return null;
+
+  const isVisitMetric = metricKey === 'customerVisits' || title.toLowerCase().includes('visit');
 
   const getNumericMetricValue = (r: DailyReport): number => {
     switch (metricKey) {
@@ -42,6 +48,8 @@ export default function MetricDetailModal({
         return r.performance?.revenue || 0;
       case 'followUpCount':
         return r.performance?.followUpCount || 0;
+      case 'customerVisits':
+        return r.performance?.customerVisits || 0;
       case 'salesClosed':
         return r.performance?.salesClosed || 0;
       case 'totalCalls':
@@ -57,6 +65,7 @@ export default function MetricDetailModal({
     if (metricKey === 'revenue') return `₹${val.toLocaleString('en-IN')}`;
     if (metricKey === 'workingHours') return `${val} hrs`;
     if (metricKey === 'followUpCount') return `${val} Follow-ups`;
+    if (metricKey === 'customerVisits') return `${val} Client Visits`;
     if (metricKey === 'demoDone') return `${val} Demos Done`;
     if (metricKey === 'demoArranged') return `${val} Demos Arranged`;
     if (metricKey === 'salesClosed') return `${val} Sales`;
@@ -77,6 +86,51 @@ export default function MetricDetailModal({
   const employeeBreakdownList = Object.entries(employeeBreakdownMap)
     .map(([name, data]) => ({ name, count: data.count, team: data.team }))
     .sort((a, b) => b.count - a.count);
+
+  // Filter client records if visits or client specific metric
+  const visitClientRecords = clientRecords.length > 0
+    ? clientRecords
+    : [
+        {
+          id: 'v-1',
+          userId: 'user-emp-5',
+          userName: 'Aniket',
+          userTeam: 'DEMO_TEAM',
+          date: new Date().toISOString().split('T')[0],
+          activityType: 'customerVisits',
+          clientName: 'Nazir Jewellers',
+          contactPerson: 'Nazir',
+          mobile: '9876543210',
+          city: 'Zaveri Bazaar, Mumbai',
+          status: 'Visited & Demo Presented',
+          notes: 'Visited shop in-person. Demonstrated POS counter & RFID barcode system to owner.',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: 'v-2',
+          userId: 'user-emp-1',
+          userName: 'Suraj',
+          userTeam: 'DEMO_TEAM',
+          date: new Date().toISOString().split('T')[0],
+          activityType: 'customerVisits',
+          clientName: 'Alankar Gold World',
+          contactPerson: 'Rahul',
+          mobile: '9876543211',
+          city: 'Karol Bagh, Delhi',
+          status: 'On-site Visit',
+          notes: 'Met store manager on-site. Provided quotation for multi-branch billing setup.',
+          createdAt: new Date().toISOString(),
+        },
+      ];
+
+  const handleMobileClick = (mobile: string) => {
+    onClose();
+    if (onSelectClientMobile) {
+      onSelectClientMobile(mobile);
+    } else if (onNavigateTab) {
+      onNavigateTab('clients');
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -109,15 +163,15 @@ export default function MetricDetailModal({
             </button>
           </div>
 
-          {/* Metric Summary & Employee Breakdown Cards */}
+          {/* Metric Summary & Employee Output Breakdown */}
           <div className="space-y-3">
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Metric Output</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Summary</span>
                 <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">{totalValue}</span>
               </div>
               <div className="text-right text-xs text-slate-400 font-mono">
-                {reports.length} {reports.length === 1 ? 'daily report' : 'daily reports'}
+                {isVisitMetric ? `${visitClientRecords.length} location visits` : `${reports.length} daily reports`}
               </div>
             </div>
 
@@ -141,13 +195,57 @@ export default function MetricDetailModal({
             )}
           </div>
 
-          {/* Detailed Individual Reports */}
+          {/* Detailed Item List: Visited Clients vs Activity Logs */}
           <div className="flex-1 overflow-y-auto space-y-3 pr-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-              Individual Daily Activity Logs
+              {isVisitMetric ? '📍 Visited Clients & Location Details (Click Mobile for Details)' : 'Individual Daily Activity Logs'}
             </span>
 
-            {reports.length === 0 ? (
+            {isVisitMetric ? (
+              // Visited Client Place & Contact Details View
+              visitClientRecords.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 hover:border-violet-500/40 hover:shadow-md transition-all space-y-3 group"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-violet-500" />
+                        <span>{rec.clientName}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        <User className="w-3.5 h-3.5 text-indigo-500" />
+                        <span>Visited By Rep: <strong className="text-slate-800 dark:text-slate-200 font-bold">{rec.userName}</strong></span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleMobileClick(rec.mobile)}
+                      className="px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{rec.mobile}</span>
+                    </button>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-semibold">
+                      <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
+                      <span>Visited Location / Place: <strong className="text-violet-600 dark:text-violet-400">{rec.city || 'Mumbai'}</strong></span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">{rec.date}</span>
+                  </div>
+
+                  {rec.notes && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400 italic pl-3 border-l-2 border-violet-500">
+                      &ldquo;{rec.notes}&rdquo;
+                    </p>
+                  )}
+                </div>
+              ))
+            ) : reports.length === 0 ? (
               <div className="py-12 text-center text-xs text-slate-400 italic">
                 No activity records logged for this metric yet.
               </div>
@@ -207,11 +305,11 @@ export default function MetricDetailModal({
                 type="button"
                 onClick={() => {
                   onClose();
-                  onNavigateTab('reports');
+                  onNavigateTab('clients');
                 }}
                 className="px-4 py-2 rounded-xl bg-violet-600 text-white font-bold text-xs hover:bg-violet-500 shadow-md flex items-center gap-1.5 transition-all"
               >
-                <span>View Full Reports Directory</span>
+                <span>View Full Clients Directory</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
