@@ -42,12 +42,22 @@ import {
   Legend,
 } from 'recharts';
 import { motion, AnimatePresence } from 'motion/react';
+import MetricDetailModal from './MetricDetailModal';
 
 const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#6366f1'];
 
 export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () => void }) {
   const { reports, users, setActiveTab, clientRecords, adminTeamFilter, setAdminTeamFilter } = useApp();
   const [activeChartTab, setActiveChartTab] = useState<'overview' | 'sales' | 'team'>('overview');
+  const [selectedMetricModal, setSelectedMetricModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    subtitle: string;
+    icon: React.ReactNode;
+    totalValue: string | number;
+    metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'onboarding' | 'support' | 'collections';
+    reports: typeof reports;
+  } | null>(null);
   const [selectedClientForTimeline, setSelectedClientForTimeline] = useState<string | null>(null);
 
   // Filter reports according to selected team filter
@@ -180,10 +190,27 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.02 }}
-                className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all group"
+                onClick={() =>
+                  setSelectedMetricModal({
+                    isOpen: true,
+                    title: `Executive Metric: ${kpi.label}`,
+                    subtitle: `Detailed reports and items contributing to ${kpi.label}`,
+                    icon: <Icon className="w-5 h-5 text-violet-500" />,
+                    totalValue: kpi.value,
+                    metricKey: kpi.label.toLowerCase().includes('revenue')
+                      ? 'revenue'
+                      : kpi.label.toLowerCase().includes('demo')
+                      ? 'demoDone'
+                      : kpi.label.toLowerCase().includes('call')
+                      ? 'totalCalls'
+                      : 'workingHours',
+                    reports: filteredReports,
+                  })
+                }
+                className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:border-violet-500/50 cursor-pointer transition-all group"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate group-hover:text-violet-600 transition-colors">
                     {kpi.label}
                   </span>
                   <div className={`w-7 h-7 rounded-xl bg-gradient-to-tr ${kpi.color} text-white flex items-center justify-center shrink-0 shadow-sm`}>
@@ -688,6 +715,21 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
           );
         })()}
       </AnimatePresence>
+
+      {/* Interactive Metric Detail Drawer Modal */}
+      {selectedMetricModal && (
+        <MetricDetailModal
+          isOpen={selectedMetricModal.isOpen}
+          onClose={() => setSelectedMetricModal(null)}
+          title={selectedMetricModal.title}
+          subtitle={selectedMetricModal.subtitle}
+          icon={selectedMetricModal.icon}
+          totalValue={selectedMetricModal.totalValue}
+          reports={selectedMetricModal.reports}
+          metricKey={selectedMetricModal.metricKey}
+          onNavigateTab={setActiveTab}
+        />
+      )}
     </div>
   );
 }

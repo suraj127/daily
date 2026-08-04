@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '@/context/AppContext';
 import {
   Clock,
@@ -20,9 +20,20 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import MetricDetailModal from './MetricDetailModal';
 
 export default function LeadManagementDashboard() {
   const { currentUser, reports, setActiveTab, getTodayReportForUser } = useApp();
+
+  const [selectedMetricModal, setSelectedMetricModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    subtitle: string;
+    icon: React.ReactNode;
+    totalValue: string | number;
+    metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'onboarding' | 'support' | 'collections';
+    reports: typeof reports;
+  } | null>(null);
 
   const todayReport = currentUser ? getTodayReportForUser(currentUser.id) : undefined;
   const isReportDoneToday = !!todayReport;
@@ -58,7 +69,7 @@ export default function LeadManagementDashboard() {
       ];
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-6 pb-12 font-sans">
       {/* Welcome Banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden shadow-xl">
         <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -75,7 +86,7 @@ export default function LeadManagementDashboard() {
             </h1>
             <p className="text-xs text-slate-300 mt-1 max-w-xl">
               {isReportDoneToday
-                ? 'Your Lead Management activity report for today is logged! Keep closing high-value leads.'
+                ? 'Your Lead Management activity report for today is logged! Click any card to view detailed item breakdown.'
                 : 'Log your first calls, old calls, feedback calls, and demos arranged before 7:00 PM.'}
             </p>
           </div>
@@ -94,50 +105,114 @@ export default function LeadManagementDashboard() {
         </div>
       </div>
 
-      {/* Today's Performance Metrics */}
+      {/* Today's Performance Metrics (Clickable Cards) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+        {/* Card 1: Total Calls */}
+        <div
+          onClick={() =>
+            setSelectedMetricModal({
+              isOpen: true,
+              title: "Today's Total Calls",
+              subtitle: 'Aggregate first calls, old calls, and follow-ups',
+              icon: <PhoneCall className="w-5 h-5 text-blue-500" />,
+              totalValue: `${todayTotalCalls} Calls`,
+              metricKey: 'totalCalls',
+              reports: lmReports,
+            })
+          }
+          className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-blue-500/50 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-bold uppercase tracking-wider">Total Calls</span>
+            <span className="text-xs font-bold uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Calls</span>
             <PhoneCall className="w-4 h-4 text-blue-500" />
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">
             {todayTotalCalls}
           </div>
-          <div className="text-[11px] text-slate-400">First + Old + Follow-up Calls</div>
+          <div className="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+            Click to view breakdown →
+          </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+        {/* Card 2: Demos Arranged */}
+        <div
+          onClick={() =>
+            setSelectedMetricModal({
+              isOpen: true,
+              title: 'Demos Arranged Today',
+              subtitle: 'Qualified demos scheduled for Demo Team reps',
+              icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+              totalValue: `${todayDemoArranged} Demos`,
+              metricKey: 'demoArranged',
+              reports: lmReports,
+            })
+          }
+          className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-blue-500/50 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-bold uppercase tracking-wider">Demos Arranged</span>
+            <span className="text-xs font-bold uppercase tracking-wider group-hover:text-blue-600 transition-colors">Demos Arranged</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">
             {todayDemoArranged}
           </div>
-          <div className="text-[11px] text-slate-400">Demos scheduled for Demo Team</div>
+          <div className="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+            Click to view breakdown →
+          </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+        {/* Card 3: Feedback Calls */}
+        <div
+          onClick={() =>
+            setSelectedMetricModal({
+              isOpen: true,
+              title: 'Post-Demo Feedback Calls',
+              subtitle: 'Prospect feedback and sentiment check-ins',
+              icon: <MessageSquare className="w-5 h-5 text-violet-500" />,
+              totalValue: `${todayFeedbackCalls} Calls`,
+              metricKey: 'followUpCount',
+              reports: lmReports,
+            })
+          }
+          className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-blue-500/50 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-bold uppercase tracking-wider">Feedback Calls</span>
+            <span className="text-xs font-bold uppercase tracking-wider group-hover:text-blue-600 transition-colors">Feedback Calls</span>
             <MessageSquare className="w-4 h-4 text-violet-500" />
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">
             {todayFeedbackCalls}
           </div>
-          <div className="text-[11px] text-slate-400">Post-demo feedback calls</div>
+          <div className="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+            Click to view breakdown →
+          </div>
         </div>
 
-        <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2">
+        {/* Card 4: Working Hours */}
+        <div
+          onClick={() =>
+            setSelectedMetricModal({
+              isOpen: true,
+              title: 'Shift & Activity Hours',
+              subtitle: 'Active hours logged in calling & lead outreach',
+              icon: <Clock className="w-5 h-5 text-amber-500" />,
+              totalValue: `${todayHours} hrs`,
+              metricKey: 'workingHours',
+              reports: lmReports,
+            })
+          }
+          className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-blue-500/50 hover:shadow-md transition-all group"
+        >
           <div className="flex items-center justify-between text-slate-500">
-            <span className="text-xs font-bold uppercase tracking-wider">Working Hours</span>
+            <span className="text-xs font-bold uppercase tracking-wider group-hover:text-blue-600 transition-colors">Working Hours</span>
             <Clock className="w-4 h-4 text-amber-500" />
           </div>
           <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">
             {todayHours}h
           </div>
-          <div className="text-[11px] text-slate-400">Shift activity total</div>
+          <div className="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+            Click to view breakdown →
+          </div>
         </div>
       </div>
 
@@ -176,7 +251,7 @@ export default function LeadManagementDashboard() {
           </div>
         </div>
 
-        {/* Monthly Summary */}
+        {/* Monthly Summary (Clickable) */}
         <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-1">
@@ -186,17 +261,56 @@ export default function LeadManagementDashboard() {
           </div>
 
           <div className="space-y-3 my-auto">
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between">
+            <div
+              onClick={() =>
+                setSelectedMetricModal({
+                  isOpen: true,
+                  title: 'Monthly Calls Handled',
+                  subtitle: 'Cumulative calling volume for your account',
+                  icon: <PhoneCall className="w-5 h-5 text-blue-500" />,
+                  totalValue: `${monthlyCalls} Calls`,
+                  metricKey: 'totalCalls',
+                  reports: myReports,
+                })
+              }
+              className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors"
+            >
               <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Total Calls Handled</span>
               <span className="font-bold text-slate-900 dark:text-slate-100 font-mono text-sm">{monthlyCalls}</span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between">
+            <div
+              onClick={() =>
+                setSelectedMetricModal({
+                  isOpen: true,
+                  title: 'Monthly Demos Arranged',
+                  subtitle: 'Cumulative qualified demos scheduled',
+                  icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
+                  totalValue: `${monthlyDemosArranged} Demos`,
+                  metricKey: 'demoArranged',
+                  reports: myReports,
+                })
+              }
+              className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors"
+            >
               <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Total Demos Arranged</span>
               <span className="font-bold text-slate-900 dark:text-slate-100 font-mono text-sm">{monthlyDemosArranged}</span>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between">
+            <div
+              onClick={() =>
+                setSelectedMetricModal({
+                  isOpen: true,
+                  title: 'Monthly Revenue Impact',
+                  subtitle: 'Impact revenue closed from arranged demos',
+                  icon: <IndianRupee className="w-5 h-5 text-blue-500" />,
+                  totalValue: `₹${monthlyRevenue.toLocaleString('en-IN')}`,
+                  metricKey: 'revenue',
+                  reports: myReports,
+                })
+              }
+              className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between cursor-pointer hover:bg-blue-500/20 transition-colors"
+            >
               <span className="text-xs font-bold text-blue-700 dark:text-blue-300">Revenue Impact</span>
               <span className="font-bold text-blue-600 dark:text-blue-400 font-mono text-sm">
                 ₹{monthlyRevenue.toLocaleString('en-IN')}
@@ -237,6 +351,21 @@ export default function LeadManagementDashboard() {
           ))}
         </div>
       </div>
+
+      {/* Interactive Metric Detail Drawer Modal */}
+      {selectedMetricModal && (
+        <MetricDetailModal
+          isOpen={selectedMetricModal.isOpen}
+          onClose={() => setSelectedMetricModal(null)}
+          title={selectedMetricModal.title}
+          subtitle={selectedMetricModal.subtitle}
+          icon={selectedMetricModal.icon}
+          totalValue={selectedMetricModal.totalValue}
+          reports={selectedMetricModal.reports}
+          metricKey={selectedMetricModal.metricKey}
+          onNavigateTab={setActiveTab}
+        />
+      )}
     </div>
   );
 }
