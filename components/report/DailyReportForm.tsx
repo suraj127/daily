@@ -253,19 +253,22 @@ export default function DailyReportForm() {
 
   // Calculate working hours from activity sum or time diff
   const calculateTotalActivityHours = () => {
-    return Object.values(activity).reduce((sum, val) => sum + (Number(val) || 0), 0);
+    return Object.values(activity).reduce((acc: number, val) => acc + (Number(val) || 0), 0);
   };
 
   const totalWorkingHours = Number(calculateTotalActivityHours().toFixed(2));
 
   // Calculated performance metrics
-  const revenuePerHour = totalWorkingHours > 0 ? Math.round(performance.revenue / totalWorkingHours) : 0;
-  const salesConversion = performance.quotationSent > 0
-    ? Number(((performance.salesClosed / performance.quotationSent) * 100).toFixed(1))
+  const revenuePerHour = totalWorkingHours > 0 ? Math.round((performance.revenue || 0) / totalWorkingHours) : 0;
+  const quotationSent = performance.quotationSent || 0;
+  const salesClosed = performance.salesClosed || 0;
+  const salesConversion = quotationSent > 0
+    ? Number(((salesClosed / quotationSent) * 100).toFixed(1))
     : 0;
-  const totalDemosArranged = performance.demoArrangedLm + performance.demoArrangedSelf;
+  const totalDemosArranged = (performance.demoArrangedLm || 0) + (performance.demoArrangedSelf || 0);
+  const demoDone = performance.demoDone || 0;
   const demoConversion = totalDemosArranged > 0
-    ? Number(((performance.demoDone / totalDemosArranged) * 100).toFixed(1))
+    ? Number(((demoDone / totalDemosArranged) * 100).toFixed(1))
     : 0;
 
   // Progress Bar Color Logic (Green = 8h, Yellow = Below Target, Red = >12h)
