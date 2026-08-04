@@ -112,32 +112,58 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
   ];
 
   // Chart datasets
-  const dailyActivityTrendData = [
-    { date: 'Mon', Demos: 12, Followups: 45, Closings: 10, Sales: 5, Revenue: 420 },
-    { date: 'Tue', Demos: 18, Followups: 58, Closings: 14, Sales: 7, Revenue: 580 },
-    { date: 'Wed', Demos: 15, Followups: 52, Closings: 12, Sales: 6, Revenue: 510 },
-    { date: 'Thu', Demos: 22, Followups: 64, Closings: 18, Sales: 9, Revenue: 720 },
-    { date: 'Fri', Demos: 25, Followups: 72, Closings: 20, Sales: 11, Revenue: 890 },
-    { date: 'Sat', Demos: 14, Followups: 38, Closings: 8, Sales: 4, Revenue: 340 },
-  ];
+  // Dynamically compute real chart datasets from submitted reports
+  const dailyActivityTrendData = useMemo(() => {
+    const map: Record<string, { date: string; Demos: number; Followups: number; Closings: number; Sales: number; Revenue: number }> = {};
+    filteredReports.forEach((r) => {
+      const d = r.date ? r.date.split('-').slice(1).join('/') : 'Today';
+      if (!map[d]) {
+        map[d] = { date: d, Demos: 0, Followups: 0, Closings: 0, Sales: 0, Revenue: 0 };
+      }
+      map[d].Demos += r.performance?.demoDone || 0;
+      map[d].Followups += r.performance?.followUpCount || 0;
+      map[d].Closings += r.performance?.closingCount || 0;
+      map[d].Sales += r.performance?.salesClosed || 0;
+      map[d].Revenue += (r.performance?.revenue || 0) / 1000;
+    });
+    const list = Object.values(map);
+    return list.length > 0 ? list : [{ date: 'Today', Demos: 0, Followups: 0, Closings: 0, Sales: 0, Revenue: 0 }];
+  }, [filteredReports]);
 
-  const teamProductivityData = [
-    { name: 'Aniket', Revenue: 970000, Demos: 11, Sales: 7, Hours: 17.2 },
-    { name: 'Pavitra', Revenue: 640000, Demos: 8, Sales: 4, Hours: 16.5 },
-    { name: 'Vijay', Revenue: 780000, Demos: 9, Sales: 5, Hours: 17.0 },
-    { name: 'Suraj', Revenue: 560000, Demos: 6, Sales: 4, Hours: 18.0 },
-    { name: 'Mansur', Revenue: 420000, Demos: 5, Sales: 3, Hours: 16.0 },
-    { name: 'Sanket', Revenue: 290000, Demos: 4, Sales: 2, Hours: 8.75 },
-    { name: 'Pranali', Revenue: 340000, Demos: 5, Sales: 3, Hours: 8.5 },
-  ];
+  const teamProductivityData = useMemo(() => {
+    const map: Record<string, { name: string; Revenue: number; Demos: number; Sales: number; Hours: number }> = {};
+    filteredReports.forEach((r) => {
+      const name = r.userName || 'Rep';
+      if (!map[name]) {
+        map[name] = { name, Revenue: 0, Demos: 0, Sales: 0, Hours: 0 };
+      }
+      map[name].Revenue += r.performance?.revenue || 0;
+      map[name].Demos += r.performance?.demoDone || 0;
+      map[name].Sales += r.performance?.salesClosed || 0;
+      map[name].Hours += r.workingHours || 0;
+    });
+    return Object.values(map);
+  }, [filteredReports]);
 
-  const activityPieData = [
-    { name: 'Demos & Presentations', value: 28 },
-    { name: 'Follow-up Calls', value: 38 },
-    { name: 'Quotation Making', value: 14 },
-    { name: 'Client Field Visits', value: 12 },
-    { name: 'Reporting & Admin', value: 8 },
-  ];
+  const activityPieData = useMemo(() => {
+    let demos = 0, followups = 0, quotations = 0, visits = 0, admin = 0;
+    filteredReports.forEach((r) => {
+      if (r.activityHours) {
+        demos += (r.activityHours.demo || 0) + (r.activityHours.demoArrangeCalls || 0);
+        followups += r.activityHours.followUpCalls || 0;
+        quotations += r.activityHours.quotationMaking || 0;
+        visits += r.activityHours.fieldVisit || 0;
+        admin += r.activityHours.reportingMeeting || 0;
+      }
+    });
+    return [
+      { name: 'Demos & Presentations', value: demos },
+      { name: 'Follow-up Calls', value: followups },
+      { name: 'Quotation Making', value: quotations },
+      { name: 'Client Field Visits', value: visits },
+      { name: 'Reporting & Admin', value: admin },
+    ];
+  }, [filteredReports]);
 
   return (
     <div className="space-y-6 pb-12">

@@ -87,41 +87,8 @@ export default function MetricDetailModal({
     .map(([name, data]) => ({ name, count: data.count, team: data.team }))
     .sort((a, b) => b.count - a.count);
 
-  // Filter client records if visits or client specific metric
-  const visitClientRecords = clientRecords.length > 0
-    ? clientRecords
-    : [
-        {
-          id: 'v-1',
-          userId: 'user-emp-5',
-          userName: 'Aniket',
-          userTeam: 'DEMO_TEAM',
-          date: new Date().toISOString().split('T')[0],
-          activityType: 'customerVisits',
-          clientName: 'Nazir Jewellers',
-          contactPerson: 'Nazir',
-          mobile: '9876543210',
-          city: 'Zaveri Bazaar, Mumbai',
-          status: 'Visited & Demo Presented',
-          notes: 'Visited shop in-person. Demonstrated POS counter & RFID barcode system to owner.',
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: 'v-2',
-          userId: 'user-emp-1',
-          userName: 'Suraj',
-          userTeam: 'DEMO_TEAM',
-          date: new Date().toISOString().split('T')[0],
-          activityType: 'customerVisits',
-          clientName: 'Alankar Gold World',
-          contactPerson: 'Rahul',
-          mobile: '9876543211',
-          city: 'Karol Bagh, Delhi',
-          status: 'On-site Visit',
-          notes: 'Met store manager on-site. Provided quotation for multi-branch billing setup.',
-          createdAt: new Date().toISOString(),
-        },
-      ];
+  // Filter real client records for visit or client specific metrics
+  const visitClientRecords = clientRecords;
 
   const handleMobileClick = (mobile: string) => {
     onClose();

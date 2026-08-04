@@ -28,11 +28,11 @@ export default function LeaderboardView() {
         name: u.name,
         team: u.team || 'DEMO_TEAM',
         department: u.department || (u.team ? u.team.replace('_', ' ') : 'Sales Dept'),
-        revenue: revenue || (u.name === 'Aniket' ? 450000 : u.name === 'Pavitra' ? 320000 : u.name === 'Vijay' ? 390000 : u.name === 'Suraj' ? 280000 : u.name === 'Mansur' ? 310000 : 150000),
-        salesClosed: salesClosed || (u.name === 'Aniket' ? 3 : u.name === 'Pavitra' ? 2 : u.name === 'Vijay' ? 2 : u.name === 'Suraj' ? 2 : u.name === 'Mansur' ? 1 : 1),
-        demoDone: demoDone || (u.name === 'Aniket' ? 5 : u.name === 'Pavitra' ? 4 : u.name === 'Vijay' ? 4 : u.name === 'Suraj' ? 3 : u.name === 'Mansur' ? 3 : 2),
-        demoArranged: demoArranged || (u.name === 'Pratiksha' ? 8 : u.name === 'Ayush' ? 6 : 4),
-        workingHours: workingHours || 8.5,
+        revenue: revenue || 0,
+        salesClosed: salesClosed || 0,
+        demoDone: demoDone || 0,
+        demoArranged: demoArranged || 0,
+        workingHours: workingHours || 0,
       };
     });
 

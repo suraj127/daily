@@ -67,19 +67,12 @@ export default function DemoTeamDashboard() {
   const monthlyRevenue = myReports.reduce((acc, r) => acc + (r.performance?.revenue || 0), 0);
 
   // Performance Trend Data
-  const trendData = myReports.length > 0
-    ? myReports.slice(0, 7).reverse().map((r) => ({
-        date: r.date.split('-').slice(1).join('/'),
-        Demos: r.performance?.demoDone || 0,
-        Revenue: (r.performance?.revenue || 0) / 1000,
-        Hours: r.workingHours || 0,
-      }))
-    : [
-        { date: '08/01', Demos: 4, Revenue: 180, Hours: 8 },
-        { date: '08/02', Demos: 5, Revenue: 250, Hours: 8.5 },
-        { date: '08/03', Demos: 6, Revenue: 320, Hours: 9 },
-        { date: '08/04', Demos: 5, Revenue: 450, Hours: 8.5 },
-      ];
+  const trendData = myReports.slice(0, 7).reverse().map((r) => ({
+    date: r.date ? r.date.split('-').slice(1).join('/') : 'Today',
+    Demos: r.performance?.demoDone || 0,
+    Revenue: (r.performance?.revenue || 0) / 1000,
+    Hours: r.workingHours || 0,
+  }));
 
   return (
     <div className="space-y-6 pb-12 font-sans">

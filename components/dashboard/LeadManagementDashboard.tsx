@@ -57,18 +57,11 @@ export default function LeadManagementDashboard() {
   const monthlyRevenue = myReports.reduce((acc, r) => acc + (r.performance?.revenue || 0), 0);
 
   // Performance Trend Data
-  const trendData = myReports.length > 0
-    ? myReports.slice(0, 7).reverse().map((r) => ({
-        date: r.date.split('-').slice(1).join('/'),
-        Calls: r.performance?.totalCalls || 0,
-        DemosArranged: r.performance?.totalDemoArranged || 0,
-      }))
-    : [
-        { date: '08/01', Calls: 30, DemosArranged: 6 },
-        { date: '08/02', Calls: 35, DemosArranged: 8 },
-        { date: '08/03', Calls: 40, DemosArranged: 10 },
-        { date: '08/04', Calls: 38, DemosArranged: 9 },
-      ];
+  const trendData = myReports.slice(0, 7).reverse().map((r) => ({
+    date: r.date ? r.date.split('-').slice(1).join('/') : 'Today',
+    Calls: r.performance?.totalCalls || 0,
+    DemosArranged: r.performance?.totalDemoArranged || 0,
+  }));
 
   return (
     <div className="space-y-6 pb-12 font-sans">
