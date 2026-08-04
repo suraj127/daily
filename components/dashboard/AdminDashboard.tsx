@@ -55,7 +55,7 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
     subtitle: string;
     icon: React.ReactNode;
     totalValue: string | number;
-    metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'onboarding' | 'support' | 'collections';
+    metricKey: 'demoDone' | 'demoArranged' | 'workingHours' | 'revenue' | 'firstCalls' | 'followUpCount' | 'salesClosed' | 'totalCalls' | 'customerVisits' | 'onboarding' | 'support' | 'collections';
     reports: typeof reports;
   } | null>(null);
   const [selectedClientForTimeline, setSelectedClientForTimeline] = useState<string | null>(null);
