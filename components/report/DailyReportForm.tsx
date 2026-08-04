@@ -466,7 +466,6 @@ export default function DailyReportForm() {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Qualitative Feedback & Comments */}
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
