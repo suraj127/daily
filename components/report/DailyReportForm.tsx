@@ -235,10 +235,10 @@ export default function DailyReportForm() {
       setProblemsFaced(existingReport.problemsFaced || '');
       setTomorrowPlan(existingReport.tomorrowPlan || '');
       setAdditionalNotes(existingReport.additionalNotes || '');
-      setPriority(existingReport.priority);
-      setMood(existingReport.mood);
-      setCustomerFeedback(existingReport.customerFeedback);
-      setSelfRating(existingReport.selfRating);
+      setPriority(existingReport.priority || 'MEDIUM');
+      setMood(existingReport.mood || 'GOOD');
+      setCustomerFeedback(existingReport.customerFeedback || 'POSITIVE');
+      setSelfRating(existingReport.selfRating || 5);
     }
   }
 
