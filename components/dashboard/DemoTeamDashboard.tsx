@@ -26,7 +26,7 @@ import {
 import MetricDetailModal from './MetricDetailModal';
 
 export default function DemoTeamDashboard() {
-  const { currentUser, reports, setActiveTab, getTodayReportForUser } = useApp();
+  const { currentUser, reports, clientRecords, setActiveTab, getTodayReportForUser } = useApp();
 
   const [selectedMetricModal, setSelectedMetricModal] = useState<{
     isOpen: boolean;
@@ -40,6 +40,13 @@ export default function DemoTeamDashboard() {
 
   const todayReport = currentUser ? getTodayReportForUser(currentUser.id) : undefined;
   const isReportDoneToday = !!todayReport;
+
+  // Leads allotted to me by Lead Management Team
+  const myAllottedLeads = clientRecords.filter(
+    (c) =>
+      c.allottedToUserId === currentUser?.id ||
+      (currentUser?.name && c.allottedToUserName?.toLowerCase() === currentUser.name.toLowerCase())
+  );
 
   // Scope demoReports strictly to current user for employees
   const demoReports = currentUser?.role === 'ADMIN'
@@ -110,6 +117,35 @@ export default function DemoTeamDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Scheduled Demo Notification Alert Banner */}
+      {myAllottedLeads.length > 0 && (
+        <div className="p-4 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs font-semibold flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-2xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-sm shrink-0">
+              🔔
+            </div>
+            <div>
+              <div className="font-bold text-amber-800 dark:text-amber-300">
+                Scheduled Demo Alert ({myAllottedLeads.length} Lead Allotted)
+              </div>
+              <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">
+                Client: <strong className="font-bold">{myAllottedLeads[0].clientName}</strong> ({myAllottedLeads[0].city || 'Mumbai'}) •
+                Scheduled Timing: <strong className="font-bold font-mono text-violet-600 dark:text-violet-400">⏰ {myAllottedLeads[0].demoTiming || '14:30 PM'}</strong> •
+                Allotted By: <strong className="font-bold">{myAllottedLeads[0].allottedByUserName || 'Lead Mgmt'}</strong>
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('clients')}
+            className="h-8 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shadow-sm transition-all shrink-0"
+          >
+            View Demo Details →
+          </button>
+        </div>
+      )}
 
       {/* Today's Performance Metrics (Clickable Cards) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

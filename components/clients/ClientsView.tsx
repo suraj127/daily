@@ -41,6 +41,7 @@ export default function ClientsView() {
   const [newNotes, setNewNotes] = useState('');
   const [newSaleAmount, setNewSaleAmount] = useState('');
   const [allottedToUserId, setAllottedToUserId] = useState('');
+  const [newDemoTiming, setNewDemoTiming] = useState('14:30 PM');
 
   // Sort state
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'amount'>('date');
@@ -67,6 +68,7 @@ export default function ClientsView() {
       allottedToUserId: allottedUser?.id,
       allottedToUserName: allottedUser?.name,
       allottedByUserName: currentUser?.name,
+      demoTiming: newDemoTiming || '14:30 PM',
       status: newActivityType === 'salesClosed' ? 'Closed' : 'Active',
       notes: newNotes,
       saleAmount: newSaleAmount ? Number(newSaleAmount) : undefined,
@@ -84,6 +86,7 @@ export default function ClientsView() {
     setNewNotes('');
     setNewSaleAmount('');
     setAllottedToUserId('');
+    setNewDemoTiming('14:30 PM');
   };
 
   // Helper to format activity type labels
@@ -647,6 +650,19 @@ export default function ClientsView() {
                         </option>
                       ))}
                   </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Scheduled Demo Timing
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 14:30 PM or 11:00 AM"
+                    value={newDemoTiming}
+                    onChange={(e) => setNewDemoTiming(e.target.value)}
+                    className="w-full h-10 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-mono font-bold focus:outline-none focus:ring-1 focus:ring-violet-500"
+                  />
                 </div>
 
                 {newActivityType === 'salesClosed' && (

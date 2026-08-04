@@ -148,6 +148,7 @@ export interface ClientRecord {
   paymentStatus?: 'Pending' | 'Partial' | 'Paid';
   notes?: string;
   followUpDate?: string; // YYYY-MM-DD
+  demoTiming?: string; // e.g. "14:30 PM", "11:00 AM"
   createdAt: string;
 }
 

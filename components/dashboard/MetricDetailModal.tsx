@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Calendar, User, FileText, ArrowRight, ExternalLink } from 'lucide-react';
+import { X, Calendar, User, FileText, ArrowRight, PhoneCall, CheckCircle2, Clock, IndianRupee } from 'lucide-react';
 import { DailyReport } from '@/lib/types';
 
 export interface MetricDetailModalProps {
@@ -30,32 +30,57 @@ export default function MetricDetailModal({
 }: MetricDetailModalProps) {
   if (!isOpen) return null;
 
-  const getMetricValue = (r: DailyReport): string | number => {
+  const getNumericMetricValue = (r: DailyReport): number => {
     switch (metricKey) {
       case 'demoDone':
-        return `${r.performance?.demoDone || 0} Demos`;
+        return r.performance?.demoDone || 0;
       case 'demoArranged':
-        return `${(r.performance?.demoArrangedLm || 0) + (r.performance?.demoArrangedSelf || 0)} Arranged`;
+        return (r.performance?.demoArrangedLm || 0) + (r.performance?.demoArrangedSelf || 0);
       case 'workingHours':
-        return `${r.workingHours || 0} hrs`;
+        return r.workingHours || 0;
       case 'revenue':
-        return `₹${(r.performance?.revenue || 0).toLocaleString('en-IN')}`;
-      case 'firstCalls':
-        return `${r.performance?.totalCalls || 0} Calls`;
+        return r.performance?.revenue || 0;
       case 'followUpCount':
-        return `${r.performance?.followUpCount || 0} Follow-ups`;
+        return r.performance?.followUpCount || 0;
       case 'salesClosed':
-        return `${r.performance?.salesClosed || 0} Sales`;
+        return r.performance?.salesClosed || 0;
       case 'totalCalls':
-        return `${r.performance?.totalCalls || 0} Calls`;
+      case 'firstCalls':
+        return r.performance?.totalCalls || 0;
       default:
-        return `${r.performance?.revenue ? '₹' + r.performance.revenue.toLocaleString('en-IN') : r.workingHours + 'h'}`;
+        return r.performance?.revenue || r.workingHours || 0;
     }
   };
 
+  const getMetricFormatted = (r: DailyReport): string => {
+    const val = getNumericMetricValue(r);
+    if (metricKey === 'revenue') return `₹${val.toLocaleString('en-IN')}`;
+    if (metricKey === 'workingHours') return `${val} hrs`;
+    if (metricKey === 'followUpCount') return `${val} Follow-ups`;
+    if (metricKey === 'demoDone') return `${val} Demos Done`;
+    if (metricKey === 'demoArranged') return `${val} Demos Arranged`;
+    if (metricKey === 'salesClosed') return `${val} Sales`;
+    return `${val} Calls/Items`;
+  };
+
+  // Group by Employee Name for Breakdown Summary
+  const employeeBreakdownMap: Record<string, { count: number; team: string }> = {};
+  reports.forEach((r) => {
+    const name = r.userName || 'Unknown Rep';
+    const val = getNumericMetricValue(r);
+    if (!employeeBreakdownMap[name]) {
+      employeeBreakdownMap[name] = { count: 0, team: r.team || 'DEMO_TEAM' };
+    }
+    employeeBreakdownMap[name].count += val;
+  });
+
+  const employeeBreakdownList = Object.entries(employeeBreakdownMap)
+    .map(([name, data]) => ({ name, count: data.count, team: data.team }))
+    .sort((a, b) => b.count - a.count);
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -84,19 +109,44 @@ export default function MetricDetailModal({
             </button>
           </div>
 
-          {/* Metric Overview Banner */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
-            <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Summary</span>
-              <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">{totalValue}</span>
+          {/* Metric Summary & Employee Breakdown Cards */}
+          <div className="space-y-3">
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">Total Metric Output</span>
+                <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">{totalValue}</span>
+              </div>
+              <div className="text-right text-xs text-slate-400 font-mono">
+                {reports.length} {reports.length === 1 ? 'daily report' : 'daily reports'}
+              </div>
             </div>
-            <div className="text-right text-xs text-slate-400 font-mono">
-              {reports.length} {reports.length === 1 ? 'record' : 'records'} found
-            </div>
+
+            {/* Per-Employee Output Breakdown */}
+            {employeeBreakdownList.length > 0 && (
+              <div className="p-4 rounded-2xl bg-violet-500/5 dark:bg-violet-950/20 border border-violet-500/15 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 block">
+                  📊 Output Made By Each Employee ({employeeBreakdownList.length} Reps)
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                  {employeeBreakdownList.map((emp) => (
+                    <div key={emp.name} className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+                      <span className="font-bold text-slate-800 dark:text-slate-200 truncate">{emp.name}</span>
+                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 ml-1">
+                        {metricKey === 'revenue' ? `₹${emp.count.toLocaleString('en-IN')}` : emp.count}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Detailed Item List */}
+          {/* Detailed Individual Reports */}
           <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+              Individual Daily Activity Logs
+            </span>
+
             {reports.length === 0 ? (
               <div className="py-12 text-center text-xs text-slate-400 italic">
                 No activity records logged for this metric yet.
@@ -127,7 +177,7 @@ export default function MetricDetailModal({
 
                     <div className="text-right">
                       <span className="px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs font-mono">
-                        {getMetricValue(r)}
+                        {getMetricFormatted(r)}
                       </span>
                     </div>
                   </div>

@@ -130,6 +130,32 @@ export default function ReportsView() {
         </div>
       </div>
 
+      {/* Separate Team Reports Tab Bar */}
+      {currentUser?.role === 'ADMIN' && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none font-sans">
+          {[
+            { id: 'ALL', label: 'All Team Reports' },
+            { id: 'DEMO_TEAM', label: '🎯 Demo Team Reports' },
+            { id: 'LEAD_MANAGEMENT', label: '📞 Lead Management Reports' },
+            { id: 'POST_SALE', label: '🎧 Post Sale Reports' },
+            { id: 'RECOVERY_TEAM', label: '💰 Recovery Team Reports' },
+          ].map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTeamFilter(t.id)}
+              className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all shrink-0 border ${
+                teamFilter === t.id
+                  ? 'bg-violet-600 text-white border-violet-600 shadow-md shadow-violet-600/20'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-violet-300'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Multi Filter Bar */}
       <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Search */}

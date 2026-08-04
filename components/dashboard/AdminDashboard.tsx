@@ -98,8 +98,6 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
   const kpis = [
     { label: 'Active Employees', value: employeeCount, icon: Users, color: 'from-violet-500 to-indigo-600' },
     { label: 'Submitted Today', value: reportsSubmittedToday, icon: FileCheck, color: 'from-emerald-500 to-teal-600' },
-    { label: 'Pending Reports', value: pendingReportsToday, icon: AlertCircle, color: 'from-amber-500 to-orange-600' },
-    { label: 'Total Working Hours', value: `${totalHours.toFixed(1)}h`, icon: Clock, color: 'from-blue-500 to-cyan-600' },
     { label: 'Demo Arranged', value: totalDemoArranged, icon: PhoneCall, color: 'from-purple-500 to-violet-600' },
     { label: 'Demo Completed', value: totalDemoDone, icon: CheckCircle2, color: 'from-indigo-500 to-blue-600' },
     { label: 'Follow-up Calls', value: totalFollowUps, icon: PhoneCall, color: 'from-teal-500 to-emerald-600' },
