@@ -299,11 +299,11 @@ export default function ReportsView() {
                 </div>
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
                   <span className="text-slate-400 text-[10px] block">Demos Completed</span>
-                  <span className="font-bold font-mono">{selectedReportDetail.performance.demoDone}</span>
+                  <span className="font-bold font-mono">{selectedReportDetail.performance?.demoDone || 0}</span>
                 </div>
                 <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
                   <span className="text-emerald-600 text-[10px] block">Revenue</span>
-                  <span className="font-bold font-mono text-emerald-600">₹{selectedReportDetail.performance.revenue.toLocaleString('en-IN')}</span>
+                  <span className="font-bold font-mono text-emerald-600">₹{(selectedReportDetail.performance?.revenue || 0).toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
