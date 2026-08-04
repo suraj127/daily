@@ -42,7 +42,7 @@ interface AppContextType {
   deleteEmployee: (id: string) => Promise<boolean>;
   markNotificationRead: (id: string) => void;
   getTodayReportForUser: (userId: string) => DailyReport | undefined;
-  addClientRecord: (record: Omit<ClientRecord, 'id' | 'createdAt' | 'userName'>) => Promise<boolean>;
+  addClientRecord: (record: Omit<ClientRecord, 'id' | 'createdAt' | 'userName' | 'userId'>) => Promise<boolean>;
   deleteClientRecord: (id: string) => Promise<boolean>;
   validateAndNavigateTab: (tab: string) => void;
 }
@@ -325,7 +325,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return reports.find((r) => r.userId === userId && r.date === today);
   };
 
-  const addClientRecord = async (record: Omit<ClientRecord, 'id' | 'createdAt' | 'userName'>) => {
+  const addClientRecord = async (record: Omit<ClientRecord, 'id' | 'createdAt' | 'userName' | 'userId'>) => {
     if (!currentUser) return false;
     const newRecord: ClientRecord = {
       ...record,
