@@ -496,7 +496,7 @@ export default function DailyReportForm() {
           <p className="text-[11px] text-slate-400">Track counts of completed calls, demos, quotations & closed deals</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {[
             { key: 'demoArrangedLm', label: 'Demo Arranged (LM)' },
             { key: 'demoArrangedSelf', label: 'Demo Arranged (Self)' },
@@ -504,12 +504,7 @@ export default function DailyReportForm() {
             { key: 'followUpCount', label: 'Follow-up Calls' },
             { key: 'closingCount', label: 'Closing Calls' },
             { key: 'quotationSent', label: 'Quotation Sent' },
-            { key: 'quotationApproved', label: 'Quotation Approved' },
             { key: 'salesClosed', label: 'Sales Closed' },
-            { key: 'leadCreated', label: 'Leads Created' },
-            { key: 'leadConverted', label: 'Leads Converted' },
-            { key: 'pendingLeads', label: 'Pending Leads' },
-            { key: 'lostLeads', label: 'Lost Leads' },
             { key: 'clientMeetings', label: 'Client Meetings' },
             { key: 'customerVisits', label: 'Customer Visits' },
           ].map((perf) => {
