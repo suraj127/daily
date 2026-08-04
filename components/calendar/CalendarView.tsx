@@ -196,10 +196,10 @@ export default function CalendarView() {
                 {dayInfo.report ? (
                   <div className="text-[11px] space-y-0.5">
                     <div className="font-bold truncate text-slate-900 dark:text-slate-100">
-                      ₹{dayInfo.report.performance.revenue.toLocaleString('en-IN')}
+                      ₹{(dayInfo.report.performance?.revenue || 0).toLocaleString('en-IN')}
                     </div>
                     <div className="text-[10px] text-slate-500 font-mono">
-                      {dayInfo.report.workingHours}h • {dayInfo.report.performance.demoDone} demos
+                      {dayInfo.report.workingHours}h • {dayInfo.report.performance?.demoDone || 0} demos
                     </div>
                   </div>
                 ) : (
@@ -249,7 +249,7 @@ export default function CalendarView() {
                 <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
                   <span className="text-emerald-700 dark:text-emerald-400 block text-[10px]">Revenue Closed</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono text-sm">
-                    ₹{selectedDayReport.performance.revenue.toLocaleString('en-IN')}
+                    ₹{(selectedDayReport.performance?.revenue || 0).toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>

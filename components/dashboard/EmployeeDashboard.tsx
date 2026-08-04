@@ -52,9 +52,9 @@ export default function EmployeeDashboard() {
   const performanceTrendData = userReports.length > 0
     ? userReports.slice(0, 7).reverse().map((r) => ({
         date: r.date.split('-').slice(1).join('/'),
-        Revenue: r.performance.revenue / 1000,
-        Demos: r.performance.demoDone,
-        Followups: r.performance.followUpCount,
+        Revenue: (r.performance?.revenue || 0) / 1000,
+        Demos: r.performance?.demoDone || 0,
+        Followups: r.performance?.followUpCount || 0,
       }))
     : [
         { date: '07/28', Revenue: 150, Demos: 3, Followups: 14 },

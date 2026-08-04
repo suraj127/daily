@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { INITIAL_USERS } from '@/lib/mock-data';
+import { INITIAL_USERS, getUserTeam } from '@/lib/mock-data';
 import { User } from '@/lib/types';
 
 let usersStore: User[] = [...INITIAL_USERS];
@@ -11,17 +11,19 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, id, name, username, department, isActive, password } = body;
+    const { action, id, name, username, department, team, isActive } = body;
 
     if (action === 'ADD') {
       if (!name) {
         return NextResponse.json({ error: 'Employee name is required' }, { status: 400 });
       }
+      const assignedTeam = team || getUserTeam(name);
       const newEmp: User = {
         id: `user-emp-${Date.now()}`,
         username: username || name.toLowerCase().replace(/\s+/g, '.'),
         name,
         role: 'EMPLOYEE',
+        team: assignedTeam,
         department: department || 'Sales',
         isActive: isActive !== false,
         email: `${name.toLowerCase().replace(/\s+/g, '')}@salestrack.pro`,
@@ -39,6 +41,7 @@ export async function POST(req: NextRequest) {
       usersStore[idx] = {
         ...usersStore[idx],
         name: name || usersStore[idx].name,
+        team: team || usersStore[idx].team,
         department: department || usersStore[idx].department,
         isActive: isActive !== undefined ? isActive : usersStore[idx].isActive,
       };

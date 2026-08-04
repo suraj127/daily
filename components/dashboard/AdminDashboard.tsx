@@ -419,10 +419,10 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
                       <td className="py-3 font-semibold text-slate-900 dark:text-slate-100">{r.userName}</td>
                       <td className="py-3 text-slate-500 font-mono">{r.date}</td>
                       <td className="py-3 text-slate-700 dark:text-slate-300 font-semibold">{r.workingHours} hrs</td>
-                      <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.demoDone}</td>
-                      <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.salesClosed}</td>
+                      <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.demoDone || 0}</td>
+                      <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.salesClosed || 0}</td>
                       <td className="py-3 font-bold text-emerald-600 dark:text-emerald-400">
-                        ₹{r.performance.revenue.toLocaleString('en-IN')}
+                        ₹{(r.performance?.revenue || 0).toLocaleString('en-IN')}
                       </td>
                       <td className="py-3 text-right">
                         <button

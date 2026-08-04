@@ -185,15 +185,31 @@ export default function ReportsView() {
             </span>
           )}
         </div>
+      </div>
+
+      {/* Main Table */}
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <input
+              type="text"
+              placeholder="Search reports by employee or achievements..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full h-10 pl-9 pr-4 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-violet-500"
+            />
+          </div>
+        </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
-                <th className="pb-3 pl-2 w-8">
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-400 font-bold uppercase text-[10px]">
+                <th className="py-3 pl-4 w-10">
                   <input
                     type="checkbox"
-                    checked={selectedRowIds.length === filteredReports.length && filteredReports.length > 0}
+                    checked={selectedRowIds.length > 0 && selectedRowIds.length === filteredReports.length}
                     onChange={toggleSelectAll}
                     className="rounded text-violet-600"
                   />
@@ -206,13 +222,13 @@ export default function ReportsView() {
                 <th className="pb-3">Sales</th>
                 <th className="pb-3">Revenue</th>
                 <th className="pb-3">Mood</th>
-                <th className="pb-3 text-right pr-2">Action</th>
+                <th className="pb-3 text-right pr-4">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {filteredReports.map((r) => (
                 <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 pl-2">
+                  <td className="py-3 pl-4">
                     <input
                       type="checkbox"
                       checked={selectedRowIds.includes(r.id)}
@@ -223,14 +239,14 @@ export default function ReportsView() {
                   <td className="py-3 font-bold text-slate-900 dark:text-slate-100">{r.userName}</td>
                   <td className="py-3 font-mono text-slate-500">{r.date}</td>
                   <td className="py-3 font-semibold text-slate-700 dark:text-slate-300">{r.workingHours}h</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.demoDone}</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.followUpCount}</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400 font-semibold">{r.performance.salesClosed}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.demoDone || 0}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.followUpCount || 0}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400 font-semibold">{r.performance?.salesClosed || 0}</td>
                   <td className="py-3 font-bold text-emerald-600 dark:text-emerald-400 font-mono">
-                    ₹{r.performance.revenue.toLocaleString('en-IN')}
+                    ₹{(r.performance?.revenue || 0).toLocaleString('en-IN')}
                   </td>
                   <td className="py-3 text-sm">{r.mood === 'EXCELLENT' ? '😊' : '🙂'}</td>
-                  <td className="py-3 text-right pr-2">
+                  <td className="py-3 text-right pr-4">
                     <button
                       type="button"
                       onClick={() => setSelectedReportDetail(r)}

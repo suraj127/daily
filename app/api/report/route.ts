@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { INITIAL_REPORTS } from '@/lib/mock-data';
+import { INITIAL_REPORTS, getUserTeam } from '@/lib/mock-data';
 import { DailyReport } from '@/lib/types';
 
 // In-memory reports store for runtime session consistency
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const {
       userId,
       userName,
+      team,
       date,
       loginTime,
       logoutTime,
@@ -55,22 +56,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required report fields' }, { status: 400 });
     }
 
-    // Validation: Working hours cannot exceed 24
     if (workingHours > 24) {
       return NextResponse.json({ error: 'Working Hours cannot exceed 24 hours' }, { status: 400 });
     }
 
-    // Validation: Revenue cannot be negative
     if (performance?.revenue < 0) {
       return NextResponse.json({ error: 'Revenue cannot be negative' }, { status: 400 });
     }
 
-    // Check if report already exists for this employee on this date
     const existingIndex = reportsStore.findIndex(
       (r) => r.userId === userId && r.date === date
     );
 
-    // Calculate revenue per hour, conversion rates
     const revenue = performance?.revenue || 0;
     const hours = Math.max(0.1, workingHours || 8);
     const revenuePerHour = Math.round(revenue / hours);
@@ -87,27 +84,12 @@ export async function POST(req: NextRequest) {
       id: existingIndex >= 0 ? reportsStore[existingIndex].id : `rep-${Date.now()}`,
       userId,
       userName,
+      team: team || getUserTeam(userName),
       date,
       loginTime: loginTime || '09:00',
       logoutTime: logoutTime || '17:30',
       workingHours: workingHours || 8,
-      activityHours: activityHours || {
-        demoArrangeCalls: 0,
-        demo: 0,
-        followUpCalls: 0,
-        closingCalls: 0,
-        quotationMaking: 0,
-        fieldVisit: 0,
-        reportingMeeting: 0,
-        technicalSupport: 0,
-        clientVisit: 0,
-        coldCalling: 0,
-        whatsappFollowUp: 0,
-        emailFollowUp: 0,
-        training: 0,
-        internalMeeting: 0,
-        otherWork: 0,
-      },
+      activityHours: activityHours || {},
       performance: performance || {
         demoArrangedLm: 0,
         demoArrangedSelf: 0,
@@ -115,15 +97,8 @@ export async function POST(req: NextRequest) {
         followUpCount: 0,
         closingCount: 0,
         quotationSent: 0,
-        quotationApproved: 0,
         salesClosed: 0,
         revenue: 0,
-        leadCreated: 0,
-        leadConverted: 0,
-        pendingLeads: 0,
-        lostLeads: 0,
-        clientMeetings: 0,
-        customerVisits: 0,
       },
       revenuePerHour,
       salesConversion,
