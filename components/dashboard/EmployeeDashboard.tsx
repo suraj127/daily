@@ -304,11 +304,11 @@ export default function EmployeeDashboard() {
                 <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                   <td className="py-3 font-mono text-slate-800 dark:text-slate-200">{r.date}</td>
                   <td className="py-3 font-semibold text-slate-700 dark:text-slate-300">{r.workingHours} hrs</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.demoDone}</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.followUpCount}</td>
-                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance.salesClosed}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.demoDone || 0}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.followUpCount || 0}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-400">{r.performance?.salesClosed || 0}</td>
                   <td className="py-3 font-bold text-emerald-600 dark:text-emerald-400">
-                    ₹{r.performance.revenue.toLocaleString('en-IN')}
+                    ₹{(r.performance?.revenue || 0).toLocaleString('en-IN')}
                   </td>
                   <td className="py-3 text-right font-medium text-amber-500">
                     {'⭐'.repeat(r.selfRating || 5)}
