@@ -167,7 +167,7 @@ export default function Sidebar({
               }}
               className={`w-full h-10 px-3.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all group ${
                 isActive
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25 font-bold'
+                  ? 'bg-violet-600 text-white shadow-md shadow-violet-600/25 font-bold'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
@@ -201,17 +201,13 @@ export default function Sidebar({
         <div className="p-3 m-3 rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800/20 border border-slate-200/80 dark:border-slate-800 text-xs">
           <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-bold mb-1">
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-amber-500" /> Daily Shift
+              <Clock className="w-3.5 h-3.5 text-violet-500" /> Today&apos;s Shift
             </span>
-            <span className="text-[10px] text-slate-400">Target: 8.0h</span>
+            <span className="text-[10px] text-slate-400 font-mono">8.0h target</span>
           </div>
-
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mb-2">
-            {isReportDoneToday
-              ? 'Shift report logged for today.'
-              : 'Shift report pending submission.'}
-          </p>
-
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-2">
+            {isReportDoneToday ? 'Report submitted for today.' : 'Please log your activity report.'}
+          </div>
           {!isReportDoneToday && (
             <button
               type="button"
@@ -219,7 +215,7 @@ export default function Sidebar({
                 setActiveTab('daily-report');
                 if (onCloseMobile) onCloseMobile();
               }}
-              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white text-[11px] font-semibold transition-colors text-center shadow-sm"
+              className="w-full py-1.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[11px] font-semibold transition-colors text-center"
             >
               Log Report Now
             </button>
@@ -230,7 +226,7 @@ export default function Sidebar({
       {/* User Footer & Logout */}
       <div className="p-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
         <div className="flex items-center gap-2.5 truncate">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-full bg-violet-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
             {currentUser?.name?.charAt(0) || 'U'}
           </div>
           <div className="truncate">
