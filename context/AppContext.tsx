@@ -301,6 +301,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const assignedTeam = team || getUserTeam(name);
     const newUser: User = {
       id: `user-emp-${Date.now()}`,
+      employeeId: `EMP-${(users.length + 1).toString().padStart(3, '0')}`,
       username: name.toLowerCase().replace(/\s+/g, '.'),
       name,
       role: 'EMPLOYEE',

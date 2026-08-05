@@ -17,6 +17,7 @@ export function getUserTeam(name: string): TeamType {
 export const INITIAL_USERS: User[] = [
   {
     id: 'user-admin',
+    employeeId: 'ADM-001',
     username: 'admin',
     name: 'Administrator',
     role: 'ADMIN',
@@ -30,6 +31,7 @@ export const INITIAL_USERS: User[] = [
     const team = getUserTeam(empName);
     return {
       id: `user-emp-${index + 1}`,
+      employeeId: `EMP-${(index + 1).toString().padStart(3, '0')}`,
       username: empName.toLowerCase().replace(/\s+/g, '.'),
       name: empName,
       role: 'EMPLOYEE' as const,

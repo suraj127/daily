@@ -102,7 +102,12 @@ export default function EmployeesView() {
                     {u.name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">{u.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">{u.name}</h3>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700">
+                        {u.employeeId || `EMP-${(u.id).slice(-3)}`}
+                      </span>
+                    </div>
                     <p className="text-[11px] text-slate-400">{u.department || 'Sales Dept'}</p>
                   </div>
                 </div>

@@ -10,6 +10,7 @@ export type Mood = 'EXCELLENT' | 'GOOD' | 'AVERAGE' | 'DIFFICULT' | 'VERY_DIFFIC
 
 export interface User {
   id: string;
+  employeeId?: string;
   username: string;
   name: string;
   role: Role;
