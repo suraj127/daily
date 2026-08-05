@@ -632,25 +632,27 @@ export default function ClientsView() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Allot Demo To (Demo Team Rep)
-                  </label>
-                  <select
-                    value={allottedToUserId}
-                    onChange={(e) => setAllottedToUserId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-violet-50 dark:bg-slate-800 border border-violet-200 dark:border-slate-700 text-violet-900 dark:text-violet-100 font-bold"
-                  >
-                    <option value="">-- Optional: Select Demo Team Member --</option>
-                    {users
-                      .filter((u) => u.team === 'DEMO_TEAM')
-                      .map((u) => (
-                        <option key={u.id} value={u.id}>
-                          {u.name} (Demo Team)
-                        </option>
-                      ))}
-                  </select>
-                </div>
+                {(currentUser?.role === 'ADMIN' || currentUser?.team === 'LEAD_MANAGEMENT') && (
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Allot Demo To (Demo Team Rep)
+                    </label>
+                    <select
+                      value={allottedToUserId}
+                      onChange={(e) => setAllottedToUserId(e.target.value)}
+                      className="w-full h-10 px-3 rounded-xl bg-violet-50 dark:bg-slate-800 border border-violet-200 dark:border-slate-700 text-violet-900 dark:text-violet-100 font-bold"
+                    >
+                      <option value="">-- Select Demo Team Member --</option>
+                      {users
+                        .filter((u) => u.team === 'DEMO_TEAM')
+                        .map((u) => (
+                          <option key={u.id} value={u.id}>
+                            {u.name} (Demo Team)
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
 
                 <div>
                   <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
