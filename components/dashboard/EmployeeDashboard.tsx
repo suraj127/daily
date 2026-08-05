@@ -162,7 +162,7 @@ export default function EmployeeDashboard() {
           </div>
         </div>
 
-        {/* Leaderboard Rank */}
+        {/* Team Leaderboard Rank */}
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center justify-between">
           <div>
             <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">
@@ -175,6 +175,46 @@ export default function EmployeeDashboard() {
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
             <Target className="w-5 h-5" />
           </div>
+        </div>
+      </div>
+
+      {/* Admin Allotted Monthly Quotas & Targets Banner */}
+      <div className="p-5 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border border-indigo-500/30 shadow-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-[10px] font-bold border border-violet-500/30 flex items-center gap-1">
+                <Target className="w-3 h-3 text-violet-400" /> Target Assigned by Administrator
+              </span>
+            </div>
+            <h3 className="text-base font-bold text-slate-100">
+              Monthly Revenue Target: ₹{(currentUser?.monthlyRevenueTarget || 0).toLocaleString('en-IN')}
+            </h3>
+            <p className="text-xs text-slate-400">
+              Achieved Closed Revenue: ₹{totalUserRevenue.toLocaleString('en-IN')} ({currentUser?.monthlyRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / currentUser.monthlyRevenueTarget) * 100)) : 0}% achieved)
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs font-mono font-bold">
+            <div className="p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 text-center min-w-[100px]">
+              <div className="text-[10px] text-slate-400 font-sans uppercase font-semibold">Calls Target</div>
+              <div className="text-amber-400 text-sm">{currentUser?.monthlyCallsTarget || 0}</div>
+            </div>
+            <div className="p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 text-center min-w-[100px]">
+              <div className="text-[10px] text-slate-400 font-sans uppercase font-semibold">Demos Target</div>
+              <div className="text-violet-400 text-sm">{currentUser?.monthlyDemosTarget || 0}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mt-3.5 w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-violet-500 to-emerald-400 transition-all duration-500"
+            style={{
+              width: `${currentUser?.monthlyRevenueTarget ? Math.min(100, (totalUserRevenue / currentUser.monthlyRevenueTarget) * 100) : 0}%`,
+            }}
+          />
         </div>
       </div>
 
