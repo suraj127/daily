@@ -87,7 +87,7 @@ export default function LeadManagementDashboard() {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            {!isReportDoneToday && (
+            {!isReportDoneToday && currentUser?.role !== 'ADMIN' && (
               <button
                 type="button"
                 onClick={() => setActiveTab('daily-report')}

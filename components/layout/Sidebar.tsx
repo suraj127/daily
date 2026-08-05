@@ -48,6 +48,7 @@ export default function Sidebar({
         { id: 'post-sale-dashboard', label: 'Post Sale Dashboard', icon: Headphones },
         { id: 'recovery-dashboard', label: 'Recovery Team Dashboard', icon: DollarSign },
         { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+        { id: 'reports', label: 'Reports', icon: FileSpreadsheet },
         { id: 'calendar', label: 'Calendar', icon: CalendarIcon },
         { id: 'employees', label: 'Employees', icon: Users },
         { id: 'clients', label: 'Client Database', icon: Contact },
