@@ -163,15 +163,15 @@ export default function DailyReportForm() {
   
   // Activity Breakdown State
   const [activity, setActivity] = useState<ActivityBreakdown>({
-    demoArrangeCalls: 1.5,
-    demo: 2.0,
-    followUpCalls: 2.0,
-    closingCalls: 1.0,
-    quotationMaking: 0.5,
+    demoArrangeCalls: 0,
+    demo: 0,
+    followUpCalls: 0,
+    closingCalls: 0,
+    quotationMaking: 0,
     fieldVisit: 0,
-    reportingMeeting: 0.5,
+    reportingMeeting: 0,
     technicalSupport: 0,
-    clientVisit: 0.5,
+    clientVisit: 0,
     coldCalling: 0,
     whatsappFollowUp: 0,
     emailFollowUp: 0,
@@ -182,21 +182,21 @@ export default function DailyReportForm() {
 
   // Performance Counts State
   const [performance, setPerformance] = useState<PerformanceCounts>({
-    demoArrangedLm: 3,
-    demoArrangedSelf: 4,
-    demoDone: 4,
-    followUpCount: 18,
-    closingCount: 5,
-    quotationSent: 4,
-    quotationApproved: 3,
-    salesClosed: 2,
-    revenue: 350000,
-    leadCreated: 6,
-    leadConverted: 2,
-    pendingLeads: 4,
+    demoArrangedLm: 0,
+    demoArrangedSelf: 0,
+    demoDone: 0,
+    followUpCount: 0,
+    closingCount: 0,
+    quotationSent: 0,
+    quotationApproved: 0,
+    salesClosed: 0,
+    revenue: 0,
+    leadCreated: 0,
+    leadConverted: 0,
+    pendingLeads: 0,
     lostLeads: 0,
-    clientMeetings: 3,
-    customerVisits: 1,
+    clientMeetings: 0,
+    customerVisits: 0,
   });
 
   // Qualitative & Feedback state
