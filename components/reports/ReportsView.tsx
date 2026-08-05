@@ -36,7 +36,9 @@ export default function ReportsView() {
   const scopedReports = useMemo(() => {
     if (!currentUser) return [];
     if (currentUser.role === 'ADMIN') return reports;
-    return reports.filter((r) => r.userId === currentUser.id);
+    return reports.filter(
+      (r) => r.userId === currentUser.id || (r.userName && r.userName.toLowerCase() === currentUser.name.toLowerCase())
+    );
   }, [reports, currentUser]);
 
   const filteredReports = scopedReports.filter((r) => {
@@ -47,7 +49,7 @@ export default function ReportsView() {
       const matchDate = r.date.includes(q);
       if (!matchName && !matchAch && !matchDate) return false;
     }
-    if (employeeFilter !== 'ALL' && r.userName.toLowerCase() !== employeeFilter.toLowerCase()) {
+    if (currentUser?.role === 'ADMIN' && employeeFilter !== 'ALL' && r.userName.toLowerCase() !== employeeFilter.toLowerCase()) {
       return false;
     }
     if (teamFilter !== 'ALL' && r.team !== teamFilter) {
@@ -98,7 +100,7 @@ export default function ReportsView() {
   return (
     <div className="space-y-6 pb-12">
       {/* Header & Export Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-[11px] font-bold">
@@ -106,7 +108,8 @@ export default function ReportsView() {
             </span>
           </div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <FileSpreadsheet className="w-5 h-5 text-violet-500" /> All Employee Daily Reports
+            <FileSpreadsheet className="w-5 h-5 text-violet-500" />
+            {currentUser?.role === 'ADMIN' ? 'All Employee Daily Reports' : 'My Daily Activity Reports'}
           </h1>
         </div>
 
@@ -163,27 +166,29 @@ export default function ReportsView() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
           <input
             type="text"
-            placeholder="Search report notes, employee..."
+            placeholder="Search report notes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 focus:outline-none"
           />
         </div>
 
-        {/* Employee Filter */}
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-semibold text-slate-400 shrink-0">Employee:</label>
-          <select
-            value={employeeFilter}
-            onChange={(e) => setEmployeeFilter(e.target.value)}
-            className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
-          >
-            <option value="ALL">All Representatives</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.name}>{u.name}</option>
-            ))}
-          </select>
-        </div>
+        {/* Employee Filter - ADMIN Only */}
+        {currentUser?.role === 'ADMIN' && (
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-slate-400 shrink-0">Employee:</label>
+            <select
+              value={employeeFilter}
+              onChange={(e) => setEmployeeFilter(e.target.value)}
+              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700"
+            >
+              <option value="ALL">All Representatives</option>
+              {users.map((u) => (
+                <option key={u.id} value={u.name}>{u.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Min Revenue Filter */}
         <div className="flex items-center gap-2">
