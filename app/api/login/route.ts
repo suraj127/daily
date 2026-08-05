@@ -5,6 +5,10 @@ export async function POST(req: NextRequest) {
   try {
     const { username, name, password } = await req.json();
 
+    if (!password || password.trim() !== 'omunim') {
+      return NextResponse.json({ error: 'Incorrect password. Password must be omunim' }, { status: 401 });
+    }
+
     const inputName = (name || username || '').toLowerCase().trim();
 
     let targetUser;
