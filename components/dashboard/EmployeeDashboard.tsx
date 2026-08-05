@@ -67,27 +67,27 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Horizontally Running Target Ticker Marquee Banner */}
+      {/* Horizontally Running Monthly Target Ticker Marquee Banner */}
       <div className="w-full overflow-hidden whitespace-nowrap bg-gradient-to-r from-violet-950 via-slate-900 to-indigo-950 border border-violet-500/40 rounded-2xl py-2.5 px-4 shadow-lg text-xs font-bold text-slate-100 flex items-center gap-3">
         <span className="shrink-0 px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-slate-950 fill-current" /> ADMIN TARGET TICKER
+          <Sparkles className="w-3 h-3 text-slate-950 fill-current" /> MONTHLY TARGET TICKER
         </span>
         <div className="overflow-hidden w-full relative">
           <div className="animate-ticker space-x-8">
             <span>
-              🎯 <strong>ADMIN ASSIGNED TARGET FOR {currentUser?.name?.toUpperCase()}:</strong> Revenue Target: <span className="text-emerald-400 font-mono">₹{assignedRevenueTarget.toLocaleString('en-IN')}</span>
+              🎯 <strong>ADMIN ASSIGNED MONTHLY TARGET FOR {currentUser?.name?.toUpperCase()}:</strong> Monthly Revenue Target: <span className="text-emerald-400 font-mono">₹{assignedRevenueTarget.toLocaleString('en-IN')}</span>
             </span>
             <span>•</span>
             <span>
-              📞 Calls Target: <span className="text-amber-300 font-mono">{assignedCallsTarget} Calls</span>
+              📞 Monthly Calls Target: <span className="text-amber-300 font-mono">{assignedCallsTarget} Calls</span>
             </span>
             <span>•</span>
             <span>
-              🎯 Demos Target: <span className="text-violet-300 font-mono">{assignedDemosTarget} Demos</span>
+              🎯 Monthly Demos Target: <span className="text-violet-300 font-mono">{assignedDemosTarget} Demos</span>
             </span>
             <span>•</span>
             <span>
-              💰 Achieved Revenue: <span className="text-emerald-300 font-mono">₹{totalUserRevenue.toLocaleString('en-IN')}</span> ({assignedRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / assignedRevenueTarget) * 100)) : 0}% Target Completed)
+              💰 Achieved Monthly Revenue: <span className="text-emerald-300 font-mono">₹{totalUserRevenue.toLocaleString('en-IN')}</span> ({assignedRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / assignedRevenueTarget) * 100)) : 0}% Monthly Target Completed)
             </span>
           </div>
         </div>
