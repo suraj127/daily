@@ -38,14 +38,31 @@ export default function SettingsView() {
 
   const handleSaveEmployeeTargetByAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedEmpId) return;
-    const emp = users.find((u) => u.id === selectedEmpId);
-    await updateUserTarget(selectedEmpId, {
+    if (!selectedEmpId) {
+      const firstEmp = users.find((u) => u.role !== 'ADMIN');
+      if (firstEmp) {
+        setSelectedEmpId(firstEmp.id);
+      } else {
+        alert('No employee selected!');
+        return;
+      }
+    }
+
+    const empIdToUse = selectedEmpId || users.find((u) => u.role !== 'ADMIN')?.id || '';
+    const emp = users.find((u) => u.id === empIdToUse);
+    const empName = emp?.name || 'Employee';
+
+    await updateUserTarget(empIdToUse, {
       monthlyRevenueTarget: Number(empRevenueTarget),
       monthlyDemosTarget: Number(empDemosTarget),
       monthlyCallsTarget: Number(empCallsTarget),
     });
-    setSuccessMsg(`Monthly target saved for employee ${emp?.name || 'Selected Employee'}!`);
+
+    const msg = `Monthly target assigned successfully to ${empName}! (Revenue: ₹${Number(empRevenueTarget).toLocaleString('en-IN')})`;
+    setSuccessMsg(msg);
+    if (typeof window !== 'undefined') {
+      window.alert(msg);
+    }
     setTimeout(() => setSuccessMsg(''), 4000);
   };
 
