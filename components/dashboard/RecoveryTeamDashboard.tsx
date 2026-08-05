@@ -20,6 +20,13 @@ export default function RecoveryTeamDashboard() {
 
   const recoveryReports = reports.filter((r) => r.team === 'RECOVERY_TEAM' || r.userId === currentUser?.id);
 
+  const totalCollections = recoveryReports.reduce((acc, r) => acc + (r.performance.paymentCollections || r.performance.revenue || 0), 0);
+  const totalOverdueResolved = recoveryReports.reduce((acc, r) => acc + (r.performance.overdueResolved || r.performance.salesClosed || 0), 0);
+  const totalPendingFollowups = recoveryReports.reduce((acc, r) => acc + (r.performance.outstandingFollowups || r.performance.followUpCount || 0), 0);
+  const avgCollectionRate = recoveryReports.length > 0
+    ? (recoveryReports.reduce((acc, r) => acc + (r.performance.collectionRatePct || 90), 0) / recoveryReports.length).toFixed(1)
+    : '0';
+
   return (
     <div className="space-y-6 pb-12 font-sans">
       <div className="p-6 rounded-3xl bg-gradient-to-r from-rose-900 via-pink-900 to-slate-900 text-white relative overflow-hidden shadow-xl">
@@ -38,13 +45,15 @@ export default function RecoveryTeamDashboard() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('daily-report')}
-            className="h-10 px-5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all active:scale-95"
-          >
-            + Submit Recovery Report
-          </button>
+          {currentUser?.role !== 'ADMIN' && (
+            <button
+              type="button"
+              onClick={() => setActiveTab('daily-report')}
+              className="h-10 px-5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all active:scale-95"
+            >
+              + Submit Recovery Report
+            </button>
+          )}
         </div>
       </div>
 
@@ -57,7 +66,7 @@ export default function RecoveryTeamDashboard() {
               title: 'Collections Collected Today',
               subtitle: 'Successful payment recoveries and receipts',
               icon: <IndianRupee className="w-5 h-5 text-emerald-500" />,
-              totalValue: '₹3,40,000',
+              totalValue: `₹${totalCollections.toLocaleString('en-IN')}`,
               metricKey: 'revenue',
               reports: recoveryReports,
             })
@@ -65,7 +74,7 @@ export default function RecoveryTeamDashboard() {
           className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-rose-500/50 hover:shadow-md transition-all group"
         >
           <div className="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-rose-600 transition-colors">Collections Today</div>
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">₹3,40,000</div>
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono">₹{totalCollections.toLocaleString('en-IN')}</div>
           <div className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">Click to view breakdown →</div>
         </div>
 
@@ -77,7 +86,7 @@ export default function RecoveryTeamDashboard() {
               title: 'Overdue Accounts Resolved',
               subtitle: 'Cleared pending invoices and settled balances',
               icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />,
-              totalValue: '14 Accounts',
+              totalValue: `${totalOverdueResolved} Accounts`,
               metricKey: 'salesClosed',
               reports: recoveryReports,
             })
@@ -85,7 +94,7 @@ export default function RecoveryTeamDashboard() {
           className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-rose-500/50 hover:shadow-md transition-all group"
         >
           <div className="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-rose-600 transition-colors">Overdue Resolved</div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">14 Accounts</div>
+          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono">{totalOverdueResolved} Accounts</div>
           <div className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">Click to view breakdown →</div>
         </div>
 
@@ -97,7 +106,7 @@ export default function RecoveryTeamDashboard() {
               title: 'Pending Recovery Follow-ups',
               subtitle: 'Scheduled calls and client visits for payment reminders',
               icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
-              totalValue: '22 Accounts',
+              totalValue: `${totalPendingFollowups} Accounts`,
               metricKey: 'followUpCount',
               reports: recoveryReports,
             })
@@ -105,7 +114,7 @@ export default function RecoveryTeamDashboard() {
           className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-rose-500/50 hover:shadow-md transition-all group"
         >
           <div className="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-rose-600 transition-colors">Pending Follow-ups</div>
-          <div className="text-2xl font-bold text-amber-500 font-mono">22 Accounts</div>
+          <div className="text-2xl font-bold text-amber-500 font-mono">{totalPendingFollowups} Accounts</div>
           <div className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">Click to view breakdown →</div>
         </div>
 
@@ -117,7 +126,7 @@ export default function RecoveryTeamDashboard() {
               title: 'Collection Target Rate',
               subtitle: 'Percentage of overdue amounts successfully collected',
               icon: <Clock className="w-5 h-5 text-blue-500" />,
-              totalValue: '92.4% Rate',
+              totalValue: `${avgCollectionRate}% Rate`,
               metricKey: 'workingHours',
               reports: recoveryReports,
             })
@@ -125,7 +134,7 @@ export default function RecoveryTeamDashboard() {
           className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-2 cursor-pointer hover:border-rose-500/50 hover:shadow-md transition-all group"
         >
           <div className="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-rose-600 transition-colors">Collection Rate</div>
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono">92.4%</div>
+          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 font-mono">{avgCollectionRate}%</div>
           <div className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">Click to view breakdown →</div>
         </div>
       </div>

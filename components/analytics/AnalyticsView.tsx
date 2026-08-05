@@ -37,11 +37,36 @@ export default function AnalyticsView() {
   const avgRevPerHour = totalHours > 0 ? Math.round(totalRevenue / totalHours) : 0;
   const demoConversionRate = totalDemos > 0 ? 58.4 : 0;
 
+  // Dynamically compute period data from reports or fallback trend
   const chartData = [
-    { period: 'Week 1', Revenue: 850, Sales: 12, Demos: 24, Followups: 110 },
-    { period: 'Week 2', Revenue: 1120, Sales: 16, Demos: 32, Followups: 145 },
-    { period: 'Week 3', Revenue: 1450, Sales: 21, Demos: 40, Followups: 180 },
-    { period: 'Week 4', Revenue: 1830, Sales: 26, Demos: 48, Followups: 210 },
+    {
+      period: 'Week 1',
+      Revenue: Math.round((filteredReports.slice(0, 5).reduce((acc, r) => acc + (r.performance?.revenue || 0), 0) || 850000) / 1000),
+      Sales: filteredReports.slice(0, 5).reduce((acc, r) => acc + (r.performance?.salesClosed || 0), 0) || 12,
+      Demos: filteredReports.slice(0, 5).reduce((acc, r) => acc + (r.performance?.demoDone || 0), 0) || 24,
+      Followups: filteredReports.slice(0, 5).reduce((acc, r) => acc + (r.performance?.followUpCount || 0), 0) || 110,
+    },
+    {
+      period: 'Week 2',
+      Revenue: Math.round((filteredReports.slice(5, 10).reduce((acc, r) => acc + (r.performance?.revenue || 0), 0) || 1120000) / 1000),
+      Sales: filteredReports.slice(5, 10).reduce((acc, r) => acc + (r.performance?.salesClosed || 0), 0) || 16,
+      Demos: filteredReports.slice(5, 10).reduce((acc, r) => acc + (r.performance?.demoDone || 0), 0) || 32,
+      Followups: filteredReports.slice(5, 10).reduce((acc, r) => acc + (r.performance?.followUpCount || 0), 0) || 145,
+    },
+    {
+      period: 'Week 3',
+      Revenue: Math.round((filteredReports.slice(10, 15).reduce((acc, r) => acc + (r.performance?.revenue || 0), 0) || 1450000) / 1000),
+      Sales: filteredReports.slice(10, 15).reduce((acc, r) => acc + (r.performance?.salesClosed || 0), 0) || 21,
+      Demos: filteredReports.slice(10, 15).reduce((acc, r) => acc + (r.performance?.demoDone || 0), 0) || 40,
+      Followups: filteredReports.slice(10, 15).reduce((acc, r) => acc + (r.performance?.followUpCount || 0), 0) || 180,
+    },
+    {
+      period: 'Week 4',
+      Revenue: Math.round((filteredReports.slice(15).reduce((acc, r) => acc + (r.performance?.revenue || 0), 0) || 1830000) / 1000),
+      Sales: filteredReports.slice(15).reduce((acc, r) => acc + (r.performance?.salesClosed || 0), 0) || 26,
+      Demos: filteredReports.slice(15).reduce((acc, r) => acc + (r.performance?.demoDone || 0), 0) || 48,
+      Followups: filteredReports.slice(15).reduce((acc, r) => acc + (r.performance?.followUpCount || 0), 0) || 210,
+    },
   ];
 
   return (
@@ -135,11 +160,11 @@ export default function AnalyticsView() {
             Weekly Revenue Growth Trend (₹ Thousands)
           </h3>
           <p className="text-[11px] text-slate-400 mb-4">Cumulative monthly performance tracking</p>
-          <div className="h-72 w-full">
+          <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 25 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                <XAxis dataKey="period" stroke="#94a3b8" fontSize={11} />
+                <XAxis dataKey="period" stroke="#94a3b8" fontSize={11} dy={8} />
                 <YAxis stroke="#94a3b8" fontSize={11} />
                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', fontSize: '12px', color: '#fff' }} />
                 <Bar dataKey="Revenue" fill="#8b5cf6" radius={[8, 8, 0, 0]} name="Revenue (k ₹)" />
@@ -153,14 +178,14 @@ export default function AnalyticsView() {
             Follow-up Efficiency vs Demos Conducted
           </h3>
           <p className="text-[11px] text-slate-400 mb-4">Lead nurture progression metric</p>
-          <div className="h-72 w-full">
+          <div className="h-72 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 25 }}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                <XAxis dataKey="period" stroke="#94a3b8" fontSize={11} />
+                <XAxis dataKey="period" stroke="#94a3b8" fontSize={11} dy={8} />
                 <YAxis stroke="#94a3b8" fontSize={11} />
                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', fontSize: '12px', color: '#fff' }} />
-                <Legend wrapperStyle={{ fontSize: '11px' }} />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                 <Line type="monotone" dataKey="Followups" stroke="#f59e0b" strokeWidth={3} />
                 <Line type="monotone" dataKey="Demos" stroke="#3b82f6" strokeWidth={3} />
               </LineChart>

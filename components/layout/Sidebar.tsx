@@ -44,7 +44,7 @@ export default function Sidebar({
       return [
         { id: 'company-dashboard', label: 'Company Dashboard', icon: LayoutDashboard },
         { id: 'demo-dashboard', label: 'Demo Team Dashboard', icon: Layers },
-        { id: 'lead-dashboard', label: 'Lead Management Dashboard', icon: TrendingUp },
+        { id: 'lead-dashboard', label: 'LM Report', icon: TrendingUp },
         { id: 'post-sale-dashboard', label: 'Post Sale Dashboard', icon: Headphones },
         { id: 'recovery-dashboard', label: 'Recovery Team Dashboard', icon: DollarSign },
         { id: 'reports', label: 'Reports', icon: FileSpreadsheet },
