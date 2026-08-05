@@ -96,19 +96,19 @@ export default function AdminDashboard({ onOpenAIModal }: { onOpenAIModal: () =>
   const targetAchievement = Math.min(100, Math.round((totalRevenue / 5000000) * 100));
 
   const kpis = [
-    { label: 'Active Employees', value: employeeCount, icon: Users, color: 'from-violet-500 to-indigo-600' },
-    { label: 'Submitted Today', value: reportsSubmittedToday, icon: FileCheck, color: 'from-emerald-500 to-teal-600' },
-    { label: 'Demo Arranged', value: totalDemoArranged, icon: PhoneCall, color: 'from-purple-500 to-violet-600' },
-    { label: 'Demo Completed', value: totalDemoDone, icon: CheckCircle2, color: 'from-indigo-500 to-blue-600' },
-    { label: 'Follow-up Calls', value: totalFollowUps, icon: PhoneCall, color: 'from-teal-500 to-emerald-600' },
-    { label: 'Closing Calls', value: totalClosingCalls, icon: BarChart2, color: 'from-pink-500 to-rose-600' },
-    { label: 'Quotations Sent', value: totalQuotations, icon: FileText, color: 'from-amber-500 to-yellow-600' },
-    { label: 'Client Visits', value: totalClientVisits, icon: Building2, color: 'from-cyan-500 to-blue-600' },
-    { label: 'Sales Closed', value: totalSales, icon: TrendingUp, color: 'from-emerald-600 to-teal-700' },
-    { label: 'Revenue Today', value: `₹${(revenueToday || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'from-violet-600 to-indigo-700' },
-    { label: 'Revenue Total', value: `₹${(totalRevenue || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'from-emerald-500 to-green-600' },
-    { label: 'Revenue / Hour', value: `₹${(revenuePerHour || 0).toLocaleString('en-IN')}`, icon: Clock, color: 'from-sky-500 to-blue-600' },
-    { label: 'Target Achievement %', value: `${targetAchievement || 0}%`, icon: Target, color: 'from-purple-600 to-pink-600' },
+    { label: 'Active Employees', value: employeeCount, icon: Users, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Submitted Today', value: reportsSubmittedToday, icon: FileCheck, color: 'bg-emerald-900/60 text-emerald-300' },
+    { label: 'Demo Arranged', value: totalDemoArranged, icon: PhoneCall, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Demo Completed', value: totalDemoDone, icon: CheckCircle2, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Follow-up Calls', value: totalFollowUps, icon: PhoneCall, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Closing Calls', value: totalClosingCalls, icon: BarChart2, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Quotations Sent', value: totalQuotations, icon: FileText, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Client Visits', value: totalClientVisits, icon: Building2, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Sales Closed', value: totalSales, icon: TrendingUp, color: 'bg-emerald-900/60 text-emerald-300' },
+    { label: 'Revenue Today', value: `₹${(revenueToday || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Revenue Total', value: `₹${(totalRevenue || 0).toLocaleString('en-IN')}`, icon: IndianRupee, color: 'bg-emerald-900/60 text-emerald-300' },
+    { label: 'Revenue / Hour', value: `₹${(revenuePerHour || 0).toLocaleString('en-IN')}`, icon: Clock, color: 'bg-slate-800 text-slate-200' },
+    { label: 'Target Achievement %', value: `${targetAchievement || 0}%`, icon: Target, color: 'bg-slate-800 text-slate-200' },
   ];
 
   // Chart datasets
