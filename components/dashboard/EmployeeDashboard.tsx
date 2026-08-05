@@ -62,6 +62,31 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="space-y-6 pb-12">
+      {/* Horizontally Running Target Ticker Marquee Banner */}
+      <div className="w-full overflow-hidden whitespace-nowrap bg-gradient-to-r from-violet-950 via-slate-900 to-indigo-950 border border-violet-500/40 rounded-2xl py-2.5 px-4 shadow-lg text-xs font-bold text-slate-100 flex items-center gap-3">
+        <span className="shrink-0 px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-slate-950 fill-current" /> ADMIN TARGET TICKER
+        </span>
+        <div className="overflow-hidden w-full relative">
+          <div className="animate-ticker space-x-8">
+            <span>
+              🎯 <strong>ADMIN ASSIGNED TARGET FOR {currentUser?.name?.toUpperCase()}:</strong> Revenue Target: <span className="text-emerald-400 font-mono">₹{(currentUser?.monthlyRevenueTarget || 0).toLocaleString('en-IN')}</span>
+            </span>
+            <span>•</span>
+            <span>
+              📞 Calls Target: <span className="text-amber-300 font-mono">{currentUser?.monthlyCallsTarget || 0} Calls</span>
+            </span>
+            <span>•</span>
+            <span>
+              🎯 Demos Target: <span className="text-violet-300 font-mono">{currentUser?.monthlyDemosTarget || 0} Demos</span>
+            </span>
+            <span>•</span>
+            <span>
+              💰 Achieved Revenue: <span className="text-emerald-300 font-mono">₹{totalUserRevenue.toLocaleString('en-IN')}</span> ({currentUser?.monthlyRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / currentUser.monthlyRevenueTarget) * 100)) : 0}% Target Completed)
+            </span>
+          </div>
+        </div>
+      </div>
       {/* Personalized Welcome Banner */}
       <div className="p-6 rounded-3xl bg-gradient-to-r from-violet-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden shadow-xl">
         <div className="absolute top-0 right-0 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
