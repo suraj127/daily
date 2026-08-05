@@ -30,7 +30,7 @@ import {
 import { motion } from 'motion/react';
 
 export default function EmployeeDashboard() {
-  const { currentUser, reports, setActiveTab, getTodayReportForUser, setSelectedDate } = useApp();
+  const { currentUser, users, reports, setActiveTab, getTodayReportForUser, setSelectedDate } = useApp();
 
   const todayReport = currentUser ? getTodayReportForUser(currentUser.id) : undefined;
   const isReportDoneToday = !!todayReport;
