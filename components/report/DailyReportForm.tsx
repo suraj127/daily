@@ -24,6 +24,7 @@ import {
   Check,
   X,
   Users,
+  PlusCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -1035,13 +1036,39 @@ export default function DailyReportForm() {
                     />
                   </div>
 
-                  <div className="flex justify-end">
+                  {/* Duplicate Record Match Alert Banner */}
+                  {mobile.trim().length >= 8 && (() => {
+                    const dup = clientRecords.find((c) => c.mobile.replace(/\D/g, '') === mobile.trim().replace(/\D/g, ''));
+                    if (!dup) return null;
+                    return (
+                      <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs space-y-1">
+                        <div className="flex items-center gap-1.5 font-bold">
+                          <AlertTriangle className="w-4 h-4 text-amber-500" />
+                          <span>Existing Lead Found in Database!</span>
+                        </div>
+                        <div className="text-[11px] font-medium">
+                          Originally added by <strong>{dup.userName}</strong> ({dup.userTeam ? dup.userTeam.replace('_', ' ') : 'Sales'})
+                          {dup.allottedToUserName && (
+                            <span> &bull; Allotted to: <strong>{dup.allottedToUserName}</strong></span>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-amber-700 dark:text-amber-300 font-mono">
+                          Status: &quot;{dup.status}&quot; | Date: {dup.date}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      Click below to add this demo/client to your report list
+                    </span>
                     <button
                       type="submit"
-                      className="h-9 px-5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-all"
+                      className="h-9 px-5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-md shadow-violet-600/20 flex items-center gap-1.5 transition-all active:scale-95"
                     >
-                      <Save className="w-3.5 h-3.5" />
-                      <span>Add Client to List</span>
+                      <PlusCircle className="w-4 h-4" />
+                      <span>+ Add Demo / Client Record</span>
                     </button>
                   </div>
                 </form>
