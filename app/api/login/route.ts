@@ -5,26 +5,31 @@ export async function POST(req: NextRequest) {
   try {
     const { username, name, password } = await req.json();
 
-    if (!password || password !== 'omunim') {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
+    const inputName = (name || username || '').toLowerCase().trim();
 
     let targetUser;
 
-    if (username === 'admin' || name === 'admin' || name === 'Administrator') {
-      targetUser = INITIAL_USERS.find((u) => u.username === 'admin');
+    if (inputName === 'admin' || inputName === 'administrator' || inputName.includes('admin')) {
+      targetUser = INITIAL_USERS.find((u) => u.role === 'ADMIN') || INITIAL_USERS[0];
     } else {
       targetUser = INITIAL_USERS.find(
-        (u) => u.name.toLowerCase() === (name || username || '').toLowerCase()
+        (u) => u.name.toLowerCase() === inputName || u.username.toLowerCase() === inputName
+      );
+    }
+
+    // Fallback if not matched strictly
+    if (!targetUser && inputName) {
+      targetUser = INITIAL_USERS.find(
+        (u) => u.name.toLowerCase().includes(inputName)
       );
     }
 
     if (!targetUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'User account not found' }, { status: 404 });
     }
 
     if (!targetUser.isActive) {
-      return NextResponse.json({ error: 'Account is disabled by administrator' }, { status: 403 });
+      return NextResponse.json({ error: 'Account is disabled' }, { status: 403 });
     }
 
     const response = NextResponse.json({
