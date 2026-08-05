@@ -160,8 +160,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: data.error || 'Login failed' };
       }
 
+      const existingSavedUser = users.find(
+        (u) => u.id === data.user.id || u.name.toLowerCase() === data.user.name.toLowerCase()
+      );
+
       const userWithTeam: User = {
         ...data.user,
+        ...(existingSavedUser || {}),
         team: data.user.team || getUserTeam(data.user.name),
       };
 
@@ -331,12 +336,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     userId: string,
     targets: { monthlyRevenueTarget?: number; monthlyDemosTarget?: number; monthlyCallsTarget?: number }
   ) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, ...targets } : u))
-    );
-    if (currentUser && currentUser.id === userId) {
-      setCurrentUser((prev) => (prev ? { ...prev, ...targets } : null));
-    }
+    setUsers((prev) => {
+      const updated = prev.map((u) => (u.id === userId ? { ...u, ...targets } : u));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('salestrack_users', JSON.stringify(updated));
+      }
+      return updated;
+    });
+
+    setCurrentUser((prev) => {
+      if (prev && prev.id === userId) {
+        const updated = { ...prev, ...targets };
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('salestrack_user', JSON.stringify(updated));
+        }
+        return updated;
+      }
+      return prev;
+    });
+
     return true;
   };
 

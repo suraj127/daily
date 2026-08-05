@@ -60,6 +60,11 @@ export default function EmployeeDashboard() {
 
   const upcomingTasks: { title: string; time: string; priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' }[] = [];
 
+  const targetUser = users.find((u) => u.id === currentUser?.id || u.name.toLowerCase() === currentUser?.name?.toLowerCase());
+  const assignedRevenueTarget = currentUser?.monthlyRevenueTarget || targetUser?.monthlyRevenueTarget || 0;
+  const assignedCallsTarget = currentUser?.monthlyCallsTarget || targetUser?.monthlyCallsTarget || 0;
+  const assignedDemosTarget = currentUser?.monthlyDemosTarget || targetUser?.monthlyDemosTarget || 0;
+
   return (
     <div className="space-y-6 pb-12">
       {/* Horizontally Running Target Ticker Marquee Banner */}
@@ -70,19 +75,19 @@ export default function EmployeeDashboard() {
         <div className="overflow-hidden w-full relative">
           <div className="animate-ticker space-x-8">
             <span>
-              🎯 <strong>ADMIN ASSIGNED TARGET FOR {currentUser?.name?.toUpperCase()}:</strong> Revenue Target: <span className="text-emerald-400 font-mono">₹{(currentUser?.monthlyRevenueTarget || 0).toLocaleString('en-IN')}</span>
+              🎯 <strong>ADMIN ASSIGNED TARGET FOR {currentUser?.name?.toUpperCase()}:</strong> Revenue Target: <span className="text-emerald-400 font-mono">₹{assignedRevenueTarget.toLocaleString('en-IN')}</span>
             </span>
             <span>•</span>
             <span>
-              📞 Calls Target: <span className="text-amber-300 font-mono">{currentUser?.monthlyCallsTarget || 0} Calls</span>
+              📞 Calls Target: <span className="text-amber-300 font-mono">{assignedCallsTarget} Calls</span>
             </span>
             <span>•</span>
             <span>
-              🎯 Demos Target: <span className="text-violet-300 font-mono">{currentUser?.monthlyDemosTarget || 0} Demos</span>
+              🎯 Demos Target: <span className="text-violet-300 font-mono">{assignedDemosTarget} Demos</span>
             </span>
             <span>•</span>
             <span>
-              💰 Achieved Revenue: <span className="text-emerald-300 font-mono">₹{totalUserRevenue.toLocaleString('en-IN')}</span> ({currentUser?.monthlyRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / currentUser.monthlyRevenueTarget) * 100)) : 0}% Target Completed)
+              💰 Achieved Revenue: <span className="text-emerald-300 font-mono">₹{totalUserRevenue.toLocaleString('en-IN')}</span> ({assignedRevenueTarget ? Math.min(100, Math.round((totalUserRevenue / assignedRevenueTarget) * 100)) : 0}% Target Completed)
             </span>
           </div>
         </div>
