@@ -72,7 +72,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required report fields' }, { status: 400 });
     }
 
-    const calculatedRevPerHour = Math.round((performance?.revenue || 0) / Math.max(1, workingHours || 1));
+    const rev = performance?.revenue || 0;
+    const hrs = Math.max(1, workingHours || 1);
+    const calculatedRevenuePerHour = Math.round(rev / hrs);
     const reportId = `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const nowIso = new Date().toISOString();
 
@@ -86,38 +88,41 @@ export async function POST(req: NextRequest) {
       logoutTime: logoutTime || '17:30',
       workingHours: workingHours || 8,
       activityHours: activityHours || {},
-      performance: performance || {
-        demoArrangedLm: 0,
-        demoArrangedSelf: 0,
-        demoDone: 0,
-        followUpCount: 0,
-        closingCount: 0,
-        quotationSent: 0,
-        salesClosed: 0,
-        revenue: 0,
-      },
-      revenuePerHour,
-      salesConversion,
-      demoConversion,
+      performance: performance || {},
+      revenuePerHour: calculatedRevenuePerHour,
       achievements: achievements || '',
       problemsFaced: problemsFaced || '',
       tomorrowPlan: tomorrowPlan || '',
-      additionalNotes: additionalNotes || '',
-      priority: priority || 'MEDIUM',
-      mood: mood || 'GOOD',
-      customerFeedback: customerFeedback || 'POSITIVE',
-      selfRating: selfRating || 5,
-      createdAt: existingIndex >= 0 ? reportsStore[existingIndex].createdAt : new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: nowIso,
+      updatedAt: nowIso,
     };
 
-    if (existingIndex >= 0) {
-      reportsStore[existingIndex] = newReport;
-    } else {
-      reportsStore.unshift(newReport);
+    // Insert into Supabase
+    try {
+      await supabase.from('reports').insert({
+        id: reportId,
+        user_id: userId,
+        user_name: userName,
+        team: newReportObj.team,
+        date,
+        login_time: newReportObj.loginTime,
+        logout_time: newReportObj.logoutTime,
+        working_hours: Number(workingHours) || 0,
+        activity_hours: activityHours || {},
+        performance: performance || {},
+        revenue_per_hour: calculatedRevenuePerHour,
+        achievements,
+        problems_faced: problemsFaced,
+        tomorrow_plan: tomorrowPlan,
+        created_at: nowIso,
+      });
+    } catch (e) {
+      console.error('Supabase report insert error:', e);
     }
 
-    return NextResponse.json({ success: true, report: newReport });
+    reportsStore = [newReportObj, ...reportsStore.filter((r) => r.id !== reportId)];
+
+    return NextResponse.json({ success: true, report: newReportObj });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Report submission failed' }, { status: 500 });
   }
