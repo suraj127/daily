@@ -1,30 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { INITIAL_REPORTS, getUserTeam } from '@/lib/mock-data';
 import { DailyReport } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
 
-// In-memory reports store for runtime session consistency
+// In-memory fallback reports store
 let reportsStore: DailyReport[] = [...INITIAL_REPORTS];
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
   const date = searchParams.get('date');
-  const startDate = searchParams.get('startDate');
-  const endDate = searchParams.get('endDate');
+
+  try {
+    let query = supabase.from('reports').select('*');
+    if (userId) query = query.eq('user_id', userId);
+    if (date) query = query.eq('date', date);
+
+    const { data, error } = await query;
+
+    if (!error && data && data.length > 0) {
+      const mappedReports: DailyReport[] = data.map((d: any) => ({
+        id: d.id,
+        userId: d.user_id,
+        userName: d.user_name,
+        team: d.team,
+        date: d.date,
+        loginTime: d.login_time || '09:30',
+        logoutTime: d.logout_time || '17:30',
+        workingHours: d.working_hours || 0,
+        activityHours: d.activity_hours || {},
+        performance: d.performance || {},
+        revenuePerHour: d.revenue_per_hour || 0,
+        achievements: d.achievements || '',
+        problemsFaced: d.problems_faced || '',
+        tomorrowPlan: d.tomorrow_plan || '',
+        createdAt: d.created_at || new Date().toISOString(),
+        updatedAt: d.created_at || new Date().toISOString(),
+      }));
+      return NextResponse.json({ reports: mappedReports });
+    }
+  } catch (e) {
+    console.error('Supabase fetch error, using fallback store:', e);
+  }
 
   let filtered = [...reportsStore];
-
-  if (userId) {
-    filtered = filtered.filter((r) => r.userId === userId);
-  }
-
-  if (date) {
-    filtered = filtered.filter((r) => r.date === date);
-  }
-
-  if (startDate && endDate) {
-    filtered = filtered.filter((r) => r.date >= startDate && r.date <= endDate);
-  }
+  if (userId) filtered = filtered.filter((r) => r.userId === userId);
+  if (date) filtered = filtered.filter((r) => r.date === date);
 
   return NextResponse.json({ reports: filtered });
 }
@@ -45,43 +66,18 @@ export async function POST(req: NextRequest) {
       achievements,
       problemsFaced,
       tomorrowPlan,
-      additionalNotes,
-      priority,
-      mood,
-      customerFeedback,
-      selfRating,
     } = body;
 
     if (!userId || !userName || !date) {
       return NextResponse.json({ error: 'Missing required report fields' }, { status: 400 });
     }
 
-    if (workingHours > 24) {
-      return NextResponse.json({ error: 'Working Hours cannot exceed 24 hours' }, { status: 400 });
-    }
+    const calculatedRevPerHour = Math.round((performance?.revenue || 0) / Math.max(1, workingHours || 1));
+    const reportId = `rep-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const nowIso = new Date().toISOString();
 
-    if (performance?.revenue < 0) {
-      return NextResponse.json({ error: 'Revenue cannot be negative' }, { status: 400 });
-    }
-
-    const existingIndex = reportsStore.findIndex(
-      (r) => r.userId === userId && r.date === date
-    );
-
-    const revenue = performance?.revenue || 0;
-    const hours = Math.max(0.1, workingHours || 8);
-    const revenuePerHour = Math.round(revenue / hours);
-
-    const quotationSent = performance?.quotationSent || 0;
-    const salesClosed = performance?.salesClosed || 0;
-    const salesConversion = quotationSent > 0 ? Number(((salesClosed / quotationSent) * 100).toFixed(1)) : 0;
-
-    const demoArranged = (performance?.demoArrangedLm || 0) + (performance?.demoArrangedSelf || 0);
-    const demoDone = performance?.demoDone || 0;
-    const demoConversion = demoArranged > 0 ? Number(((demoDone / demoArranged) * 100).toFixed(1)) : 0;
-
-    const newReport: DailyReport = {
-      id: existingIndex >= 0 ? reportsStore[existingIndex].id : `rep-${Date.now()}`,
+    const newReportObj: DailyReport = {
+      id: reportId,
       userId,
       userName,
       team: team || getUserTeam(userName),
