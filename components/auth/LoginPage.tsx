@@ -56,14 +56,18 @@ export default function LoginPage() {
       >
         {/* Company Logo & Brand */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/25 mb-3 border border-white/20">
-            <TrendingUp className="w-7 h-7 text-white" />
+          <div className="w-16 h-16 rounded-full bg-slate-950 border-2 border-orange-500 flex items-center justify-center shadow-xl shadow-orange-500/30 mb-3 relative overflow-hidden">
+            <div className="w-10 h-5 rounded-full border border-orange-400 bg-orange-500/20 flex items-center justify-center gap-1.5">
+              <span className="text-[10px] font-bold text-sky-400">^</span>
+              <span className="text-[10px] font-bold text-emerald-400">^</span>
+            </div>
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent tracking-tight">
-            SalesTrack Pro
+          <h1 className="text-2xl font-extrabold tracking-tight">
+            <span className="bg-gradient-to-r from-orange-500 via-amber-400 to-amber-500 bg-clip-text text-transparent">Online Munim</span>{' '}
+            <span className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent">Sales Track</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Enterprise AI-Powered Reporting & Analytics
+          <p className="text-xs text-slate-400 mt-1">
+            Official Performance & Reporting Management Portal
           </p>
         </div>
 

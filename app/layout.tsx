@@ -3,8 +3,8 @@ import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 
 export const metadata: Metadata = {
-  title: 'SalesTrack Pro – AI Powered Daily Reporting & Performance Dashboard',
-  description: 'Production-ready enterprise SaaS for daily activity reporting, team analytics, and AI business insights.',
+  title: 'Online Munim Sales Track – Daily Activity Reporting & Performance Portal',
+  description: 'Online Munim Sales Track production SaaS for daily activity reporting, team analytics, and business insights.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -47,7 +47,6 @@ export default function Sidebar({
         { id: 'lead-dashboard', label: 'LM Report', icon: TrendingUp },
         { id: 'post-sale-dashboard', label: 'Post Sale Dashboard', icon: Headphones },
         { id: 'recovery-dashboard', label: 'Recovery Team Dashboard', icon: DollarSign },
-        { id: 'reports', label: 'Reports', icon: FileSpreadsheet },
         { id: 'analytics', label: 'Analytics', icon: BarChart3 },
         { id: 'calendar', label: 'Calendar', icon: CalendarIcon },
         { id: 'employees', label: 'Employees', icon: Users },
@@ -114,19 +113,23 @@ export default function Sidebar({
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800/80 w-64 transition-colors">
-      {/* App Header Logo */}
-      <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-md shadow-violet-500/20 text-white">
-            <TrendingUp className="w-5 h-5" />
+      {/* Online Munim Sales Track Header Logo */}
+      <div className="h-16 px-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
+        <div className="flex items-center gap-2.5">
+          {/* Logo Robot Badge */}
+          <div className="w-9 h-9 rounded-full bg-slate-950 border-2 border-orange-500 flex items-center justify-center shadow-md shadow-orange-500/30 text-white shrink-0 relative overflow-hidden">
+            <div className="w-6 h-3 rounded-full border border-orange-400 bg-orange-500/20 flex items-center justify-center gap-1">
+              <span className="text-[7px] font-bold text-sky-400">^</span>
+              <span className="text-[7px] font-bold text-emerald-400">^</span>
+            </div>
           </div>
           <div>
-            <span className="font-bold text-base bg-gradient-to-r from-slate-900 via-violet-900 to-indigo-900 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-              SalesTrack
+            <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-orange-500 via-amber-500 to-sky-500 bg-clip-text text-transparent">
+              Online Munim
             </span>
-            <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400 ml-1 tracking-wider uppercase">
-              PRO
-            </span>
+            <div className="text-[10px] font-bold text-sky-500 dark:text-sky-400 tracking-wider uppercase -mt-1">
+              Sales Track
+            </div>
           </div>
         </div>
 
