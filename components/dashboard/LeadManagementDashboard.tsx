@@ -66,14 +66,15 @@ export default function LeadManagementDashboard() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* Welcome Banner */}
-      <div className="p-6 rounded-3xl bg-slate-900 dark:bg-slate-900 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden shadow-xl">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1">
-                <TrendingUp className="w-3.5 h-3.5 text-slate-300" /> Lead Management Dashboard
+              <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold border border-blue-500/30 flex items-center gap-1">
+                <TrendingUp className="w-3.5 h-3.5 text-blue-300" /> Lead Management Dashboard
               </span>
-              <span className="text-xs text-slate-400 font-mono">Welcome back</span>
+              <span className="text-xs text-slate-300 font-mono">Welcome back</span>
             </div>
             <h1 className="text-2xl font-bold tracking-tight">
               Hello, {currentUser?.name}! 📞

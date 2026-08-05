@@ -77,14 +77,15 @@ export default function DemoTeamDashboard() {
   return (
     <div className="space-y-6 pb-12 font-sans">
       {/* Welcome Banner */}
-      <div className="p-6 rounded-3xl bg-slate-900 dark:bg-slate-900 text-white relative overflow-hidden shadow-xl border border-slate-800">
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-violet-900 via-indigo-900 to-slate-900 text-white relative overflow-hidden shadow-xl">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1">
-                <Layers className="w-3.5 h-3.5 text-amber-400" /> Demo Team Dashboard
+              <span className="px-2.5 py-0.5 rounded-full bg-violet-500/20 text-violet-300 text-xs font-semibold border border-violet-500/30 flex items-center gap-1">
+                <Layers className="w-3.5 h-3.5 text-amber-300" /> Demo Team Dashboard
               </span>
-              <span className="text-xs text-slate-400 font-mono">Welcome back</span>
+              <span className="text-xs text-slate-300 font-mono">Welcome back</span>
             </div>
             <h1 className="text-2xl font-bold tracking-tight">
               Hello, {currentUser?.name}! 🎯
