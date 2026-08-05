@@ -56,19 +56,9 @@ export default function EmployeeDashboard() {
         Demos: r.performance?.demoDone || 0,
         Followups: r.performance?.followUpCount || 0,
       }))
-    : [
-        { date: '07/28', Revenue: 150, Demos: 3, Followups: 14 },
-        { date: '07/29', Revenue: 220, Demos: 4, Followups: 18 },
-        { date: '07/30', Revenue: 310, Demos: 5, Followups: 20 },
-        { date: '08/01', Revenue: 280, Demos: 4, Followups: 16 },
-        { date: '08/02', Revenue: 450, Demos: 6, Followups: 22 },
-      ];
+    : [];
 
-  const upcomingTasks = [
-    { title: 'Follow up with Apex Retail procurement officer', time: '14:30 PM', priority: 'HIGH' },
-    { title: 'Conduct product demo with Zenith Tech team', time: '16:00 PM', priority: 'MEDIUM' },
-    { title: 'Send finalized invoice to Alpha Corp', time: '17:15 PM', priority: 'CRITICAL' },
-  ];
+  const upcomingTasks: { title: string; time: string; priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' }[] = [];
 
   return (
     <div className="space-y-6 pb-12">
