@@ -96,38 +96,23 @@ export default function Sidebar({
   };
 
   const getTeamColor = () => {
-    if (currentUser?.role === 'ADMIN') return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
-    switch (currentUser?.team) {
-      case 'DEMO_TEAM':
-        return 'bg-violet-500/10 text-violet-600 border-violet-500/20';
-      case 'LEAD_MANAGEMENT':
-        return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-      case 'POST_SALE':
-        return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
-      case 'RECOVERY_TEAM':
-        return 'bg-rose-500/10 text-rose-600 border-rose-500/20';
-      default:
-        return 'bg-slate-500/10 text-slate-600 border-slate-500/20';
-    }
+    return 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700';
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800/80 w-64 transition-colors">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 w-64 transition-colors">
       {/* Online Munim Sales Track Header Logo */}
-      <div className="h-16 px-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
+      <div className="h-16 px-5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-2.5">
           {/* Logo Robot Badge */}
-          <div className="w-9 h-9 rounded-full bg-slate-950 border-2 border-orange-500 flex items-center justify-center shadow-md shadow-orange-500/30 text-white shrink-0 relative overflow-hidden">
-            <div className="w-6 h-3 rounded-full border border-orange-400 bg-orange-500/20 flex items-center justify-center gap-1">
-              <span className="text-[7px] font-bold text-sky-400">^</span>
-              <span className="text-[7px] font-bold text-emerald-400">^</span>
-            </div>
+          <div className="w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-100 border border-slate-700 dark:border-slate-300 flex items-center justify-center text-white dark:text-slate-900 shrink-0 font-extrabold text-sm">
+            OM
           </div>
           <div>
-            <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-orange-500 via-amber-500 to-sky-500 bg-clip-text text-transparent">
+            <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
               Online Munim
             </span>
-            <div className="text-[10px] font-bold text-sky-500 dark:text-sky-400 tracking-wider uppercase -mt-1">
+            <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase -mt-1">
               Sales Track
             </div>
           </div>
@@ -145,7 +130,7 @@ export default function Sidebar({
       </div>
 
       {/* Team Badge Indicator */}
-      <div className="px-4 py-2.5 bg-slate-50/50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
+      <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <span className="text-[10px] uppercase font-bold text-slate-400">Current Access</span>
         <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${getTeamColor()}`}>
           {getTeamLabel()}
@@ -167,14 +152,14 @@ export default function Sidebar({
               }}
               className={`w-full h-10 px-3.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all group ${
                 isActive
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25 font-bold'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <div className="flex items-center gap-3">
                 <Icon
                   className={`w-4 h-4 transition-transform group-hover:scale-110 ${
-                    isActive ? 'text-white' : 'text-slate-400 dark:text-slate-500'
+                    isActive ? 'text-white dark:text-slate-900' : 'text-slate-400 dark:text-slate-500'
                   }`}
                 />
                 <span>{item.label}</span>
@@ -184,8 +169,8 @@ export default function Sidebar({
                 <span
                   className={`px-2 py-0.5 text-[10px] rounded-full font-bold ${
                     isActive
-                      ? 'bg-white/20 text-white'
-                      : item.badgeColor || 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                      ? 'bg-white/20 text-white dark:bg-slate-900/20 dark:text-slate-900'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
                   }`}
                 >
                   {item.badge}
@@ -198,10 +183,10 @@ export default function Sidebar({
 
       {/* Daily Shift Status Widget */}
       {currentUser?.role === 'EMPLOYEE' && (
-        <div className="p-3 m-3 rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800/20 border border-slate-200/80 dark:border-slate-800 text-xs">
+        <div className="p-3 m-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
           <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-bold mb-1">
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-amber-500" /> Daily Shift
+              <Clock className="w-3.5 h-3.5 text-slate-500" /> Daily Shift
             </span>
             <span className="text-[10px] text-slate-400">Target: 8.0h</span>
           </div>
@@ -219,7 +204,7 @@ export default function Sidebar({
                 setActiveTab('daily-report');
                 if (onCloseMobile) onCloseMobile();
               }}
-              className="w-full py-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white text-[11px] font-semibold transition-colors text-center shadow-sm"
+              className="w-full py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-bold transition-colors text-center shadow-sm"
             >
               Log Report Now
             </button>
@@ -228,9 +213,9 @@ export default function Sidebar({
       )}
 
       {/* User Footer & Logout */}
-      <div className="p-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+      <div className="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2.5 truncate">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold text-xs flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs flex items-center justify-center shrink-0">
             {currentUser?.name?.charAt(0) || 'U'}
           </div>
           <div className="truncate">
